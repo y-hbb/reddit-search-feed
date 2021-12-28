@@ -1,8 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Axios } from 'axios'
+import { JSDOM } from 'jsdom';
 
 export default async (request: VercelRequest, response: VercelResponse) => {
-    const data = new FormData();
+    const jsdom = new JSDOM('')
+    const data = new jsdom.window.FormData();
     data.append("grant_type", "authorization_code")
     data.append("duration", "permanent")
 
