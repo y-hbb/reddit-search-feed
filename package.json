@@ -6,7 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "concurrently \"(cd app; pnpm run dev)\" \"(cd server;pnpm run start:dev)\"",
     "preinstall": "npx only-allow pnpm",
-    "build":"cd app; pnpm install; pnpm run build; cp -R dist/** ../server/public; cd ../server; pnpm install; pnpm run build"
+    "install": "pnpm install",
+    "build":"cd app; pnpm run build; cp -R dist/** ../server/public; cd ../server; pnpm run build"
   },
   "repository": {
     "type": "git",
