@@ -2,8 +2,7 @@
 
 //env var name should start with VITE_
 interface ImportMetaEnv {
-    readonly VITE_REDDIT_CLIENT_ID: string
-    readonly VITE_REDDIT_SECRET_KEY: string
+    readonly VITE_REDDIT_AUTH_SITE: string
 }
 
 interface ImportMeta {

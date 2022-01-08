@@ -14,13 +14,14 @@ export default class RedditClient {
   private authURL = "https://www.reddit.com/api/v1/access_token";
   private authData?: AuthData;
   private hasRefreshToken = false;
+  private customAuthURL = import.meta.env.VITE_REDDIT_AUTH_SITE
   constructor() {
     this.http = new Axios({});
     this.getAccessToken();
   }
   private async getAccessToken() {
     if (!localStorage.getItem("access-token")) {
-      const result = await this.http.get("localhost:8080/getAccessToken");
+      const result = await this.http.get(this.customAuthURL+"/getAccessToken");
       localStorage.setItem("access-token", result.data);
       this.authData = { ...this.authData, ...JSON.parse(result.data) };
     } else {
