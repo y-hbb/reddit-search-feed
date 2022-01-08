@@ -4,9 +4,8 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"(cd app; pnpm run dev)\" \"(cd server;pnpm run start:dev)\"",
-    "preinstall": "npx only-allow pnpm",
-    "build":"pnpm install; cd app; pnpm run build; cp -R dist/** ../server/public; cd ../server; pnpm run build"
+    "start": "concurrently \"(cd app; npm run dev)\" \"(cd server;npm run start:dev)\"",
+    "build":"sh ./build.sh"
   },
   "repository": {
     "type": "git",
@@ -24,5 +23,9 @@
   },
   "engines": {
     "node": "17.3.0"
-  }
+  },
+  "workspaces":[
+    "app",
+    "server"
+  ]
 }
