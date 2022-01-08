@@ -2,10 +2,11 @@
   "name": "reddit-search-feed",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "concurrently \"(cd app; pnpm run dev)\" \"(cd server;pnpm run start:dev)\"",
-    "preinstall": "npx only-allow pnpm"
+    "preinstall": "npx only-allow pnpm",
+    "build":"cd app; pnpm run build; cp - R dist public; cd ../server; pnpm run build"
   },
   "repository": {
     "type": "git",
@@ -20,5 +21,8 @@
   "homepage": "https://github.com/yashash99/reddit-search-feed#readme",
   "dependencies": {
     "concurrently": "^6.5.1"
+  },
+  "engines": {
+    "node": "17.3.0"
   }
 }
