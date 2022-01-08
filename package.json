@@ -5,8 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "concurrently \"(cd app; pnpm run dev)\" \"(cd server;pnpm run start:dev)\"",
-    "preinstall": "pnpm -v|| npm i -g pnpm; npx only-allow pnpm",
-    "build":"cd app; pnpm run build; cp - R dist public; cd ../server; pnpm run build"
+    "preinstall": "npx only-allow pnpm",
+    "build":"cd app; pnpm run build; cp -R dist/** ../server/public; cd ../server; pnpm run build"
   },
   "repository": {
     "type": "git",
