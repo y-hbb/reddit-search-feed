@@ -6,6 +6,22 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class RedditService {
+  refreshToken(refreshToken: string): Observable<AxiosResponse<Object>> {
+    return this.httpService.post(
+      'https://www.reddit.com/api/v1/access_token',
+      `grant_type=refresh_token&refresh_token=${refreshToken}`,
+      {
+        auth: {
+          username: this.configService.get('REDDIT_CLIENT_ID'),
+          password: this.configService.get('REDDIT_SECRET_KEY'),
+        },
+        responseType: 'json',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      },
+    );
+  }
   constructor(
     private httpService: HttpService,
     private configService: ConfigService,

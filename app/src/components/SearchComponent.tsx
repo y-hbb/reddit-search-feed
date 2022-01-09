@@ -6,27 +6,33 @@ type SearchComponentProps = {
 }
 
 export type SearchOptions = {
-    q: String,
+    q: string,
     includeOver18: boolean
+    t: string,
+    sort: string
 }
 
 
 function SearchComponent(props: SearchComponentProps) {
     //query
     const [q, setQ] = useState("")
+    const [selectedSort, setSelectedSort] = useState('')
+    const [selectedT, setSelectedT] = useState('')
     //safe search
     const [safeS, setSafeS] = useState(true)
     function searchKeyUp(e: KeyboardEvent<HTMLInputElement>) {
         if (e.key === "Enter") {
-            props.search({ q: q, includeOver18: safeS })
+            props.search({ q: q, includeOver18: !safeS, t: selectedT, sort: selectedSort })
         }
     }
 
     const sort = 'relevance, hot, top, new, comments'.split(',').map((a) => a.trim())
     const time = 'hour,day,week,month,year,all'.split(',').map((a) => a.trim())
 
-    const sortList = sort.map((s) => <MenuItem value={s}>{s}</MenuItem>)
-    const timeList = time.map((s) => <MenuItem value={s}>{s}</MenuItem>)
+    const sortList = sort.map((s) => <MenuItem key={s} value={s}>{s}</MenuItem>)
+    sortList.unshift(<MenuItem key="--" value="">--</MenuItem>)
+    const timeList = time.map((s) => <MenuItem key={s} value={s}>{s}</MenuItem>)
+    timeList.unshift(<MenuItem key="--" value="">--</MenuItem>)
 
     return (
         <Stack flexDirection={{ xs: 'column', sm: 'row' }} p={2} sx={{ alignItems: 'center', gap: 2 }} >
@@ -39,6 +45,8 @@ function SearchComponent(props: SearchComponentProps) {
                 <Select
                     labelId="sort-label"
                     label="Sort"
+                    value={selectedSort}
+                    onChange={(e) => { setSelectedSort(e.target.value) }}
                 >
                     {sortList}
                 </Select>
@@ -48,6 +56,8 @@ function SearchComponent(props: SearchComponentProps) {
                 <Select
                     labelId="time-label"
                     label="Time"
+                    value={selectedT}
+                    onChange={(e) => { setSelectedT(e.target.value) }}
                 >
                     {timeList}
                 </Select>

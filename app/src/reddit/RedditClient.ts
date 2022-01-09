@@ -1,4 +1,5 @@
 import { Axios } from "axios";
+import { SearchOptions } from "../components/SearchComponent";
 
 type AuthData = {
   access_token: string;
@@ -14,30 +15,39 @@ export default class RedditClient {
   private authURL = "https://www.reddit.com/api/v1/access_token";
   private authData?: AuthData;
   private hasRefreshToken = false;
-  private customAuthURL = import.meta.env.VITE_REDDIT_AUTH_SITE
+  private customAuthURL = import.meta.env.VITE_REDDIT_AUTH_SITE;
   constructor() {
     this.http = new Axios({});
     this.getAccessToken();
   }
   private async getAccessToken() {
-    if (!localStorage.getItem("access-token")) {
-      const result = await this.http.get(this.customAuthURL+"/getAccessToken");
-      localStorage.setItem("access-token", result.data);
-      this.authData = { ...this.authData, ...JSON.parse(result.data) };
+    if (!localStorage.getItem("reddit-access-token")) {
+      try {
+        const result = await this.http.get(
+          this.customAuthURL + "/getAccessToken"
+        );
+        localStorage.setItem("reddit-access-token", result.data);
+        this.authData = { ...this.authData, ...JSON.parse(result.data) };
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       this.authData = {
         ...this.authData,
-        ...JSON.parse(localStorage.getItem("access-token")!),
+        ...JSON.parse(localStorage.getItem("reddit-access-token")!),
       };
     }
   }
 
   private async refreshToken() {}
 
-  async search(q: string) {
+  async search(s: SearchOptions) {
     try {
       const result = await this.http.get(
-        this.apiURL + `/search.json?raw_json=1&q=${q}`,
+        this.apiURL +
+          `/search.json?q=${s.q.replaceAll(" ", "+")}&include_over_18=${
+            s.includeOver18 ? 1 : 0
+          }&raw_json=1&sort=${s.sort}&t=${s.t}`,
         {
           headers: {
             Authorization: `Bearer${this.authData?.access_token}`,
@@ -45,7 +55,9 @@ export default class RedditClient {
           responseType: "json",
         }
       );
-      this.authData = { ...this.authData, ...JSON.parse(result.data) };
-    } catch (error) {}
+      return JSON.parse(result.data);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

@@ -22,9 +22,10 @@
     "concurrently": "^6.5.1"
   },
   "engines": {
-    "node": "17.3.0"
+    "node": "17.3.0",
+    "npm": "8.3.0"
   },
-  "workspaces":[
+  "workspaces": [
     "app",
     "server"
   ]
