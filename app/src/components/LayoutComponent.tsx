@@ -1,5 +1,6 @@
 import { Container } from '@mui/material'
 import React from 'react'
+import HeaderComponent from './HeaderComponent'
 
 
 type LayoutComponentProps = {
@@ -8,9 +9,13 @@ type LayoutComponentProps = {
 
 function LayoutComponent(props: LayoutComponentProps) {
     return (
-        <Container maxWidth='xl'>
-            {props.children}
-        </Container>
+        <>
+            <HeaderComponent />
+            <Container maxWidth='xl'>
+
+                {props.children}
+            </Container>
+        </>
     )
 }
 

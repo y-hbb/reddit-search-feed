@@ -1,14 +1,13 @@
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Card, CardActions, CardContent, CardHeader, CardMedia, Grid, IconButton, IconButtonProps, Typography } from '@mui/material';
-import Collapse from '@mui/material/Collapse';
-import { styled } from '@mui/material/styles';
+import { Card, CardContent, CardHeader, CardMedia, Grid, Typography } from '@mui/material';
+import { Box } from '@mui/system';
+import '@vime/core/themes/default.css';
+import '@vime/core/themes/light.css';
+import { Dash, DefaultControls, DefaultUi, Player, Video } from '@vime/react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
-import ReactPlayer from 'react-player';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
+//import 'swiper/css';
 
 type RedditCardComponentProps = {
     data: any
@@ -25,7 +24,7 @@ function RedditCardComponent(props: RedditCardComponentProps) {
             const result = [dayjs.unix(props.data?.created).fromNow(), 'u/' + props.data?.author]
             if (props.data?.over_18)
                 result.push('NSFW')
-            return result.map((s, i, a) => i != a.length - 1 ? s + ' | ' : s)
+            return result.map((s, i, a) => i != a.length - 1 ? <Box component="span" key={s}><Typography component="span" >{s}</Typography><Typography component="span"> | </Typography></Box> : <Typography key={s} component="span">{s}</Typography>)
         })()
         }</Typography>
     </>
@@ -43,11 +42,11 @@ function RedditCardComponent(props: RedditCardComponentProps) {
 
     return (
         <Grid item>
-            <Card sx={{ maxWidth: 400, maxHeight: 400, overflow: 'auto' }}>
+            <Card sx={{ maxWidth: { xs: '100%', sm: 500 }, maxHeight: 400, overflow: 'auto' }}>
                 <CardHeader title={title} subheader={subheader} />
                 {props.data?.post_hint === 'image' &&
                     <CardMedia component="img"
-                        src={props.data?.preview.images[0].resolutions[1].url} />
+                        src={props.data?.preview.images[0].resolutions[1].url} width='100%' />
                 }
                 {!props.data?.preview?.reddit_video_preview && props.data?.post_hint === 'rich:video' &&
                     <CardMedia component="iframe"
@@ -55,47 +54,35 @@ function RedditCardComponent(props: RedditCardComponentProps) {
                 }
                 {props.data?.preview?.reddit_video_preview &&
                     <CardMedia component="div">
-                        <ReactPlayer
-                            url={[
-                                { src: props.data?.preview.reddit_video_preview.dash_url, type: 'video/dash' },
-                                { src: props.data?.preview.reddit_video_preview.fallback_url, type: 'video/mp4' }
-                            ]}
-                            config={
-                                {
-                                    file: {
-                                        forceDASH: true
-                                    }
-                                }
-                            }
-                            width='100%'
-                            height='100%'
-                            controls
-                            light={props.data?.preview.images[0].resolutions[1].url}
-
-                        />
+                        <Player>
+                            <Video>
+                                <Dash
+                                    src={props.data?.preview.reddit_video_preview.dash_url}
+                                    version="latest"
+                                />
+                                <source data-src={props.data?.preview.reddit_video_preview.fallback_url} type="video/mp4" />
+                            </Video>
+                            <DefaultUi>
+                                <DefaultControls hideOnMouseLeave activeDuration={2000} />
+                            </DefaultUi>
+                        </Player>
                     </CardMedia>
                 }
                 {props.data?.is_video &&
                     <CardMedia component="div">
-                        <ReactPlayer
-                            url={[
-                                { src: props.data?.secure_media.reddit_video.dash_url, type: 'video/dash' },
-                                { src: props.data?.secure_media.reddit_video.fallback_url, type: 'video/mp4' }
-                            ]}
-                            config={
-                                {
-                                    file: {
-                                        forceDASH: true
-                                    }
-                                }
-                            }
-                            width='100%'
-                            height='100%'
-                            controls
 
-                            light={props.data?.preview.images[0].resolutions[1].url}
-
-                        />
+                        <Player>
+                            <Video>
+                                <Dash
+                                    src={props.data?.secure_media.reddit_video.dash_url}
+                                    version="latest"
+                                />
+                                <source data-src={props.data?.secure_media.reddit_video.fallback_url} type="video/mp4" />
+                            </Video>
+                            <DefaultUi>
+                                <DefaultControls hideOnMouseLeave activeDuration={2000} />
+                            </DefaultUi>
+                        </Player>
                     </CardMedia>
                 }
                 <CardContent>

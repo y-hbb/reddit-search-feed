@@ -26,8 +26,10 @@ export default class RedditClient {
         const result = await this.http.get(
           this.customAuthURL + "/getAccessToken"
         );
-        localStorage.setItem("reddit-access-token", result.data);
-        this.authData = { ...this.authData, ...JSON.parse(result.data) };
+        if (validateAccessToken(JSON.parse(result.data))) {
+          localStorage.setItem("reddit-access-token", result.data);
+          this.authData = { ...this.authData, ...JSON.parse(result.data) };
+        }
       } catch (error) {
         console.log(error);
       }
@@ -60,4 +62,8 @@ export default class RedditClient {
       console.log(error);
     }
   }
+}
+function validateAccessToken(response: any) {
+  if (response.access_token) return true;
+  return false;
 }

@@ -6,6 +6,7 @@ import SearchComponent, { SearchOptions } from '../components/SearchComponent'
 
 function SearchScreen() {
     const app = useContext(appContext)
+    app.title = 'Search Reddit'
     const [data, setData] = useState([])
     async function onSearch(searchOptions: SearchOptions) {
         const result = await app.reddit.search(searchOptions)
