@@ -1,4 +1,4 @@
-import { Box, FormControl, FormControlLabel, FormGroup, InputLabel, MenuItem, Select, Stack, Switch, TextField } from '@mui/material'
+import { Box, Chip, FormControl, FormControlLabel, FormGroup, InputLabel, MenuItem, Select, Stack, Switch, TextField, Grid } from '@mui/material'
 import React, { KeyboardEvent, useState } from 'react'
 
 type SearchComponentProps = {
@@ -35,34 +35,41 @@ function SearchComponent(props: SearchComponentProps) {
     timeList.unshift(<MenuItem key="--" value="">--</MenuItem>)
 
     return (
-        <Stack flexDirection={{ xs: 'column', sm: 'row' }} p={2} sx={{ alignItems: 'center', gap: 2 }} >
-            <TextField fullWidth placeholder="Search..." value={q} onChange={e => setQ(e.target.value)} onKeyUp={searchKeyUp} />
-            <FormGroup sx={{ minWidth: 'fit-content' }}>
-                <FormControlLabel control={<Switch checked={safeS} onChange={(_, c) => setSafeS(c)} />} label="Safe Search" />
-            </FormGroup>
-            <FormControl fullWidth>
-                <InputLabel id="sort-label">Sort</InputLabel>
-                <Select
-                    labelId="sort-label"
-                    label="Sort"
-                    value={selectedSort}
-                    onChange={(e) => { setSelectedSort(e.target.value) }}
-                >
-                    {sortList}
-                </Select>
-            </FormControl>
-            <FormControl fullWidth>
-                <InputLabel id="time-label">Time</InputLabel>
-                <Select
-                    labelId="time-label"
-                    label="Time"
-                    value={selectedT}
-                    onChange={(e) => { setSelectedT(e.target.value) }}
-                >
-                    {timeList}
-                </Select>
-            </FormControl>
-        </ Stack>
+        <Box p={2}>
+            <Stack flexDirection={{ xs: 'column', sm: 'row' }} p={2} sx={{ alignItems: 'center', gap: 2 }} >
+                <TextField fullWidth placeholder="Search..." value={q} onChange={e => setQ(e.target.value)} onKeyUp={searchKeyUp} />
+                <FormGroup sx={{ minWidth: 'fit-content' }}>
+                    <FormControlLabel control={<Switch checked={safeS} onChange={(_, c) => setSafeS(c)} />} label="Safe Search" />
+                </FormGroup>
+                <FormControl fullWidth>
+                    <InputLabel id="sort-label">Sort</InputLabel>
+                    <Select
+                        labelId="sort-label"
+                        label="Sort"
+                        value={selectedSort}
+                        onChange={(e) => { setSelectedSort(e.target.value) }}
+                    >
+                        {sortList}
+                    </Select>
+                </FormControl>
+                <FormControl fullWidth>
+                    <InputLabel id="time-label">Time</InputLabel>
+                    <Select
+                        labelId="time-label"
+                        label="Time"
+                        value={selectedT}
+                        onChange={(e) => { setSelectedT(e.target.value) }}
+                    >
+                        {timeList}
+                    </Select>
+                </FormControl>
+
+            </ Stack>
+            {/* <Grid container>
+                <Grid item><Chip label="Deletable" variant="outlined" onDelete={(e) => { console.log(e) }} /></Grid>
+                <Grid item><Chip label="Deletable" variant="outlined" onDelete={(e) => { console.log(e) }} /></Grid>
+            </Grid> */}
+        </Box>
     )
 }
 

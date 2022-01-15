@@ -6,7 +6,7 @@ import { appContext } from '../AppContext'
 function HeaderComponent() {
     const app = useContext(appContext)
     return (
-        <AppBar position="static">
+        <AppBar position="sticky">
             <Toolbar>
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                     {app.title}

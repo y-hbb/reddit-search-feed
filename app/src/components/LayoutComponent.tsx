@@ -1,5 +1,6 @@
 import { Container } from '@mui/material'
 import React from 'react'
+import FooterComponent from './FooterComponent'
 import HeaderComponent from './HeaderComponent'
 
 
@@ -15,6 +16,7 @@ function LayoutComponent(props: LayoutComponentProps) {
 
                 {props.children}
             </Container>
+            <FooterComponent />
         </>
     )
 }

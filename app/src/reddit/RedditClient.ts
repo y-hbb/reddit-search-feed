@@ -1,5 +1,6 @@
 import { Axios } from "axios";
 import { SearchOptions } from "../components/SearchComponent";
+import { v4 as uuidv4 } from "uuid";
 
 type AuthData = {
   access_token: string;
@@ -7,6 +8,7 @@ type AuthData = {
   expires_in: number;
   refresh_token: string;
   scope: string;
+  device_id: string;
 };
 
 export default class RedditClient {
@@ -23,9 +25,20 @@ export default class RedditClient {
   private async getAccessToken() {
     if (!localStorage.getItem("reddit-access-token")) {
       try {
-        const result = await this.http.get(
-          this.customAuthURL + "/getAccessToken"
+        const formData = new FormData();
+
+        formData.append(
+          "grant_type",
+          "https://oauth.reddit.com/grants/installed_client"
         );
+        formData.append("device_id", uuidv4());
+        formData.append("duration", "permanent");
+        const result = await this.http.post(this.authURL, formData, {
+          auth: {
+            username: import.meta.env.VITE_REDDIT_CLIENT_ID,
+            password: "",
+          },
+        });
         if (validateAccessToken(JSON.parse(result.data))) {
           localStorage.setItem("reddit-access-token", result.data);
           this.authData = { ...this.authData, ...JSON.parse(result.data) };
