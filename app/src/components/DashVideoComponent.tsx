@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { MediaPlayer } from 'dashjs';
+import { MediaPlayerClass } from 'dashjs'
+import React, { useState } from 'react'
 
 type DashVideoComponentProps = {
     src: string,
@@ -7,14 +7,23 @@ type DashVideoComponentProps = {
 }
 
 function DashVideoComponent(props: DashVideoComponentProps) {
-    let player = MediaPlayer().create();
-
-    const ref = React.createRef<HTMLVideoElement>()
+    import('dashjs')
+    let player: MediaPlayerClass
 
     const [isPlayerInitialized, setisPlayerInitialized] = useState(false)
 
+    function onplay(e: React.SyntheticEvent<HTMLVideoElement, Event>) {
+        import('dashjs').then(({ MediaPlayer }) => {
+            player = MediaPlayer().create();
+            if (!isPlayerInitialized) {
+                player.initialize(e.target as HTMLElement | undefined, props.src, true);
+                setisPlayerInitialized(true)
+            }
+        })
+    }
+
     return (
-        <video poster={props.poster} width="100%" controls ref={ref} onPlay={() => { if (!isPlayerInitialized) { player.initialize(ref.current as HTMLElement | undefined, props.src, true); setisPlayerInitialized(true) } }}>
+        <video poster={props.poster} width="100%" controls onPlay={(e) => onplay(e)}>
 
         </video>
     )

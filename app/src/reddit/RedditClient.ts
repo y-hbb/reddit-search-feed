@@ -11,7 +11,7 @@ type AuthData = {
   device_id: string;
 };
 
-export default class RedditClient {
+class RedditClient {
   private http: Axios;
   private apiURL = "https://oauth.reddit.com";
   private authURL = "https://www.reddit.com/api/v1/access_token";
@@ -57,19 +57,19 @@ export default class RedditClient {
   private async refreshToken() {}
 
   async search(s: SearchOptions) {
+    let url =
+      this.apiURL +
+      `/search.json?q=${s.q.replaceAll(" ", "+")}&include_over_18=${
+        s.includeOver18 ? 1 : 0
+      }&raw_json=1&sort=${s.sort}&t=${s.t}&after=${s.after ? s.after : ""}`;
+
     try {
-      const result = await this.http.get(
-        this.apiURL +
-          `/search.json?q=${s.q.replaceAll(" ", "+")}&include_over_18=${
-            s.includeOver18 ? 1 : 0
-          }&raw_json=1&sort=${s.sort}&t=${s.t}`,
-        {
-          headers: {
-            Authorization: `Bearer${this.authData?.access_token}`,
-          },
-          responseType: "json",
-        }
-      );
+      const result = await this.http.get(url, {
+        headers: {
+          Authorization: `Bearer${this.authData?.access_token}`,
+        },
+        responseType: "json",
+      });
       return JSON.parse(result.data);
     } catch (error) {
       console.log(error);
@@ -80,3 +80,5 @@ function validateAccessToken(response: any) {
   if (response.access_token) return true;
   return false;
 }
+
+export const reddit = new RedditClient();

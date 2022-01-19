@@ -1,15 +1,19 @@
 import { Chip, Typography } from '@mui/material';
-import { Box, margin } from '@mui/system';
+import { Box } from '@mui/system';
+import { nanoid } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import React from 'react';
-import ReactMarkdown from 'react-markdown';
-import DashVideoComponent from '../DashVideoComponent';
-import HlsVideoComponent from '../HlsVideoComponent';
+import React, { lazy } from 'react';
+import { useAppDispatch } from '../../store/AppStore';
+import { actions } from '../../store/RootReducer';
 
 export const PostTitle = function (props: any) {
+    const ReactMarkdown = lazy(() => import('react-markdown'))
+    const dispatch = useAppDispatch()
     return <>
-        <Chip label={'r/' + props.data?.subreddit} variant="outlined" size="small" onDelete={() => { }} />
+        <Chip label={'r/' + props.data?.subreddit} variant="outlined" size="small" onDelete={() => {
+            dispatch(actions.addExclude({ id: nanoid(), data: props.data?.subreddit, type: 'subreddit' }))
+        }} />
 
         <ReactMarkdown components={{
             p({ node, className, children, ...props }) {
@@ -22,9 +26,12 @@ export const PostTitle = function (props: any) {
 
 export const PostSubHeader = function (props: any) {
     dayjs.extend(relativeTime)
+    const dispatch = useAppDispatch()
     return <>
         <Typography variant='subtitle2'>{(() => {
-            const result = [<>{dayjs.unix(props.data?.created).fromNow()}</>, <><Chip size="small" label={'u/' + props.data?.author} variant="outlined" onDelete={() => { }} /></>]
+            const result = [<>{dayjs.unix(props.data?.created).fromNow()}</>, <><Chip size="small" label={'u/' + props.data?.author} variant="outlined" onDelete={() => {
+                dispatch(actions.addExclude({ id: nanoid(), data: props.data?.author, type: 'author' }))
+            }} /></>]
             if (props.data?.over_18)
                 result.push(<>{'NSFW'}</>)
             if (props.data?.spoiler)
@@ -93,6 +100,7 @@ export const LoadContent = function (props: any) {
     const content = data?.content
 
     if (type === MEDIA_TYPE.TEXT) {
+        const ReactMarkdown = lazy(() => import('react-markdown'))
         return <ReactMarkdown>{props.data?.selftext}</ReactMarkdown>
     }
     if (type === MEDIA_TYPE.GIF) {
@@ -109,6 +117,7 @@ export const LoadContent = function (props: any) {
         </>
     }
     if (type === MEDIA_TYPE.RPAN) {
+        const HlsVideoComponent = lazy(() => import('../HlsVideoComponent'))
         return <>
             <HlsVideoComponent poster={content.scrubber_media_url} src={content.hls_url} />
         </>
@@ -119,6 +128,7 @@ export const LoadContent = function (props: any) {
         </>
     }
     if (type === MEDIA_TYPE.VIDEO) {
+        const DashVideoComponent = lazy(() => import('../DashVideoComponent'))
         return <>
             <DashVideoComponent poster={props.data?.preview?.images[0].resolutions[0].url} src={content.dash_url} />
         </>

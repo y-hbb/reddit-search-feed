@@ -1,5 +1,4 @@
-import Hls from 'hls.js'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 
 type HlsVideoComponentProps = {
@@ -8,23 +7,23 @@ type HlsVideoComponentProps = {
 }
 
 function HlsVideoComponent(props: HlsVideoComponentProps) {
-
-    const player = new Hls({ lowLatencyMode: true, })
-
-    const ref = React.createRef<HTMLVideoElement>()
-
     const [isPlayerInitialized, setisPlayerInitialized] = useState(false)
+    function onplay(e: React.SyntheticEvent<HTMLVideoElement, Event>) {
+        import('hls.js').then(({ default: Hls }) => {
 
-    return (
-        <video poster={props.poster} width="100%" controls ref={ref} onPlay={() => {
+            const player = new Hls({ lowLatencyMode: true, })
             if (!isPlayerInitialized) {
                 if (Hls.isSupported()) {
-                    player.loadSource(props.src); player.attachMedia(ref.current as HTMLMediaElement); setisPlayerInitialized(true)
+                    player.loadSource(props.src);
+                    player.attachMedia(e.target as HTMLMediaElement);
+                    setisPlayerInitialized(true)
                 }
             }
+        })
 
-        }}>
-            {!Hls.isSupported() && <>Hls not supported</>}
+    }
+    return (
+        <video poster={props.poster} width="100%" controls onPlay={(e) => onplay(e)}>
 
         </video>
     )

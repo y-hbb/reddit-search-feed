@@ -1,14 +1,17 @@
-import { Container, FormControl, Grid, InputLabel, MenuItem, Select, Stack, ToggleButton, ToggleButtonGroup, useMediaQuery, useTheme } from '@mui/material'
-import { Box } from '@mui/system'
-import React, { useState } from 'react'
-import RedditCardComponent from './reddit_card/RedditCardComponent'
-import ViewCozyIcon from '@mui/icons-material/ViewCozy';
 import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 import ViewComfyIcon from '@mui/icons-material/ViewComfy';
+import ViewCozyIcon from '@mui/icons-material/ViewCozy';
+import { Button, Grid, Stack, ToggleButton, ToggleButtonGroup, useMediaQuery, useTheme } from '@mui/material';
+import { Box } from '@mui/system';
+import React, { useMemo, useState } from 'react';
+import RedditCardComponent from './reddit_card/RedditCardComponent';
 
 type FeedComponentProps = {
-    data: any[]
+    data: any[],
+    hasNextPage: boolean,
+    isNextPageLoading: boolean,
+    loadNextPage: () => void
 }
 
 export enum VIEW {
@@ -21,7 +24,6 @@ export enum VIEW {
 
 function FeedComponent(props: FeedComponentProps) {
     const [view, setView] = useState(VIEW.COMPACT)
-
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -37,11 +39,15 @@ function FeedComponent(props: FeedComponentProps) {
     expandMap.set(VIEW.EXPANDED3, 3)
 
     if (view === VIEW.COMPACT)
-
         list = props.data.map((s) => <Grid key={s.data.id} item><RedditCardComponent view={view} data={s.data} /></Grid>)
     else if ((view === VIEW.EXPANDED1 || view === VIEW.EXPANDED2 || view === VIEW.EXPANDED3))
         list = props.data.map((s) => <Grid key={s.data.id} item xs={expandMap.get(view)}><RedditCardComponent view={view} data={s.data} /></Grid>)
 
+
+
+    const itemCount = props.hasNextPage ? props.data.length + 1 : props.data.length;
+    const loadMoreItems = props.isNextPageLoading ? () => { } : props.loadNextPage;
+    const isItemLoaded = (index: number) => !props.hasNextPage || index < props.data.length;
     return (
         <Stack mb={2} direction='column' spacing={2}>
             {matches &&
@@ -85,25 +91,18 @@ function FeedComponent(props: FeedComponentProps) {
                 </ToggleButtonGroup>
             }
             {props.data.length > 0 &&
-                <>{view === VIEW.COMPACT &&
-                    <Grid container spacing={2} >
-                        {list}
-                    </Grid>
-                }
-                    {(view === VIEW.EXPANDED1 || view === VIEW.EXPANDED2 || view === VIEW.EXPANDED3) &&
-                        <Grid container spacing={2} >
-                            {list}
-                        </Grid>
-                    }</>
+                <Grid container spacing={2} >
+                    {list}
+                </Grid>
             }
 
 
             {props.data.length == 0 &&
                 <Box>No posts</Box>
             }
-
-
-
+            {props.hasNextPage && !props.isNextPageLoading &&
+                <Button onClick={() => { props.loadNextPage() }}>Load More</Button>
+            }
         </Stack>
     )
 }

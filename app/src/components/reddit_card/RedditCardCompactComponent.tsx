@@ -1,6 +1,4 @@
-import { Card, CardHeader, CardMedia, Grid } from '@mui/material';
-import '@vime/core/themes/default.css';
-import '@vime/core/themes/light.css';
+import { Card, CardHeader, CardMedia } from '@mui/material';
 import React from 'react';
 import { PostSubHeader, PostTitle } from './RedditCardCommonComponents';
 

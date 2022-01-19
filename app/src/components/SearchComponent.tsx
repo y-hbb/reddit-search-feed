@@ -1,5 +1,8 @@
 import { Box, Chip, FormControl, FormControlLabel, FormGroup, InputLabel, MenuItem, Select, Stack, Switch, TextField, Grid } from '@mui/material'
 import React, { KeyboardEvent, useState } from 'react'
+import { useAppSelector } from '../store/AppStore'
+import { useAppDispatch } from '../store/AppStore';
+import { actions } from '../store/RootReducer';
 
 type SearchComponentProps = {
     search: (s: SearchOptions) => void,
@@ -9,11 +12,20 @@ export type SearchOptions = {
     q: string,
     includeOver18: boolean
     t: string,
-    sort: string
+    sort: string,
+    after?: string
 }
 
 
 function SearchComponent(props: SearchComponentProps) {
+    const excludeItem = useAppSelector((state) => state.excludeItem)
+    const dispatch = useAppDispatch()
+    const excludeList = excludeItem.map((v) => <Grid key={v.id} item><Chip label={(() => {
+        if (v.type === 'author')
+            return 'u/' + v.data
+        else if (v.type === 'subreddit')
+            return 'r/' + v.data
+    })()} variant="outlined" onDelete={() => { dispatch(actions.removeExclude(v)) }} /></Grid>)
     //query
     const [q, setQ] = useState("")
     const [selectedSort, setSelectedSort] = useState('')
@@ -65,10 +77,10 @@ function SearchComponent(props: SearchComponentProps) {
                 </FormControl>
 
             </ Stack>
-            {/* <Grid container>
-                <Grid item><Chip label="Deletable" variant="outlined" onDelete={(e) => { console.log(e) }} /></Grid>
-                <Grid item><Chip label="Deletable" variant="outlined" onDelete={(e) => { console.log(e) }} /></Grid>
-            </Grid> */}
+
+            <Grid spacing={1} container>
+                {excludeList}
+            </Grid>
         </Box>
     )
 }

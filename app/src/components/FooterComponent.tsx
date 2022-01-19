@@ -2,7 +2,6 @@ import { Menu } from '@mui/icons-material'
 import { AppBar, Button, IconButton, Toolbar, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import React, { useContext } from 'react'
-import { appContext } from '../AppContext'
 
 function FooterComponent() {
 
