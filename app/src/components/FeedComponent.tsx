@@ -4,7 +4,7 @@ import ViewComfyIcon from '@mui/icons-material/ViewComfy';
 import ViewCozyIcon from '@mui/icons-material/ViewCozy';
 import { Button, Grid, Stack, ToggleButton, ToggleButtonGroup, useMediaQuery, useTheme } from '@mui/material';
 import { Box } from '@mui/system';
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import RedditCardComponent from './reddit_card/RedditCardComponent';
 
 type FeedComponentProps = {

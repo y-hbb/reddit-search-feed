@@ -83,6 +83,8 @@ export function postType(data: any): PostType | undefined {
     if (data?.post_hint === "link") {
         if (data?.preview?.reddit_video_preview)
             return { mediaType: MEDIA_TYPE.VIDEO, content: data?.preview?.reddit_video_preview }
+        if (data?.preview?.images)
+            return { mediaType: MEDIA_TYPE.IMAGE, content: data?.preview?.images }
         return { mediaType: MEDIA_TYPE.LINK, content: data?.url }
     }
     if (data?.is_gallery) {
