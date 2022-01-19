@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import { VIEW } from '../FeedComponent';
 import RedditCardCompactComponent from './RedditCardCompactComponent';
 import RedditCardCompactEmptyComponent from './RedditCardCompactEmptyComponent';
@@ -9,17 +9,15 @@ type RedditCardComponentProps = {
     view: VIEW
 }
 function RedditCardComponent(props: RedditCardComponentProps) {
-    const data = props.data
+    const card = ({ data, view }: any) => {
+        if (view === VIEW.COMPACT)
+            return <RedditCardCompactComponent data={data} />
+        else if (view === VIEW.EXPANDED1 || view === VIEW.EXPANDED2 || view === VIEW.EXPANDED3)
+            return <RedditCardExpandedComponent data={data} />
+        return <RedditCardCompactComponent data={data} />
+    }
 
-    const card = (() => {
-        if (props.view === VIEW.COMPACT)
-            return <RedditCardCompactComponent data={props.data} />
-        else if (props.view === VIEW.EXPANDED1 || props.view === VIEW.EXPANDED2 || props.view === VIEW.EXPANDED3)
-            return <RedditCardExpandedComponent data={props.data} />
-        return <RedditCardCompactComponent data={props.data} />
-    })()
-
-    return <Suspense fallback={<RedditCardCompactEmptyComponent />}>{card}</Suspense>
+    return <Suspense fallback={<RedditCardCompactEmptyComponent />}>{useMemo(() => card({ data: props.data, view: props.view }), [props.data, props.view])}</Suspense>
 
 
 }

@@ -103,6 +103,9 @@ function FeedComponent(props: FeedComponentProps) {
             {props.hasNextPage && !props.isNextPageLoading &&
                 <Button onClick={() => { props.loadNextPage() }}>Load More</Button>
             }
+            {props.isNextPageLoading &&
+                <Button disabled >Loading...</Button>
+            }
         </Stack>
     )
 }
