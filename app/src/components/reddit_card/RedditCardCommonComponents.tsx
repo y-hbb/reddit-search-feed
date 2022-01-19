@@ -4,6 +4,14 @@ import { nanoid } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import React, { lazy } from 'react';
+import { A11y, Navigation } from 'swiper';
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
 import { useAppDispatch } from '../../store/AppStore';
 import { actions } from '../../store/RootReducer';
 
@@ -114,7 +122,7 @@ export const LoadContent = function (props: any) {
     }
     if (type === MEDIA_TYPE.IMAGE) {
         return <>
-            <img
+            <img style={{ display: 'block', margin: 'auto' }}
                 src={props.data?.preview.images[0].resolutions[0].url} width={props.data?.preview.images[0].resolutions[0].width} />
         </>
     }
@@ -138,6 +146,31 @@ export const LoadContent = function (props: any) {
     if (type === MEDIA_TYPE.EMBED) {
         return <>
             <iframe width={content.width} height={content.height} src={content.media_domain_url} />
+        </>
+    }
+    if (type === MEDIA_TYPE.GALLERY) {
+        let slides: any;
+        if (props.data?.gallery_data) {
+            slides = (props.data?.gallery_data.items as any[]).map((v) => {
+                const img = props.data?.media_metadata[v.media_id].p[0]
+
+                return <SwiperSlide key={v.media_id}><img style={{ display: 'block', margin: 'auto' }}
+                    src={img.u} width={img.x} /></SwiperSlide>
+            })
+        }
+
+        return <>
+            <Swiper
+                modules={[Navigation, A11y]}
+                spaceBetween={50}
+                slidesPerView={1}
+                navigation
+                onSlideChange={() => console.log('slide change')}
+                onSwiper={(swiper) => console.log(swiper)}
+            >
+                {slides}
+
+            </Swiper>
         </>
     }
     return <>Nothing to show</>
