@@ -1,4 +1,5 @@
-import { Box, Chip, FormControl, FormControlLabel, FormGroup, InputLabel, MenuItem, Select, Stack, Switch, TextField, Grid } from '@mui/material'
+import { Search } from '@mui/icons-material';
+import { Box, Chip, FormControl, FormControlLabel, FormGroup, InputLabel, MenuItem, Select, Stack, Switch, TextField, Grid, Button } from '@mui/material'
 import React, { KeyboardEvent, useState } from 'react'
 import { useAppSelector } from '../store/AppStore'
 import { useAppDispatch } from '../store/AppStore';
@@ -28,8 +29,8 @@ function SearchComponent(props: SearchComponentProps) {
     })()} variant="outlined" onDelete={() => { dispatch(actions.removeExclude(v)) }} /></Grid>)
     //query
     const [q, setQ] = useState("")
-    const [selectedSort, setSelectedSort] = useState('')
-    const [selectedT, setSelectedT] = useState('')
+    const [selectedSort, setSelectedSort] = useState('relevance')
+    const [selectedT, setSelectedT] = useState('all')
     //safe search
     const [safeS, setSafeS] = useState(true)
     function searchKeyUp(e: KeyboardEvent<HTMLInputElement>) {
@@ -42,14 +43,15 @@ function SearchComponent(props: SearchComponentProps) {
     const time = 'hour,day,week,month,year,all'.split(',').map((a) => a.trim())
 
     const sortList = sort.map((s) => <MenuItem key={s} value={s}>{s}</MenuItem>)
-    sortList.unshift(<MenuItem key="--" value="">--</MenuItem>)
+
     const timeList = time.map((s) => <MenuItem key={s} value={s}>{s}</MenuItem>)
-    timeList.unshift(<MenuItem key="--" value="">--</MenuItem>)
+
 
     return (
         <Box p={2}>
             <Stack flexDirection={{ xs: 'column', sm: 'row' }} p={2} sx={{ alignItems: 'center', gap: 2 }} >
                 <TextField fullWidth placeholder="Search..." value={q} onChange={e => setQ(e.target.value)} onKeyUp={searchKeyUp} />
+                <Button variant='outlined' onClick={() => { props.search({ q: q, includeOver18: !safeS, t: selectedT, sort: selectedSort }) }}><Search /></Button>
                 <FormGroup sx={{ minWidth: 'fit-content' }}>
                     <FormControlLabel control={<Switch checked={safeS} onChange={(_, c) => setSafeS(c)} />} label="Safe Search" />
                 </FormGroup>

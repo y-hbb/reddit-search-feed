@@ -19,7 +19,7 @@ function RedditCardExpandedComponent(props: RedditCardExpandedComponentProps) {
 
     return (
         <Grid xs={12} item>
-            <Card sx={{ overflowY: 'auto', maxHeight: 500 }}>
+            <Card sx={{ overflow: 'auto', maxHeight: 500 }}>
 
                 <CardHeader title={title} subheader={subheader} />
                 <CardContent>

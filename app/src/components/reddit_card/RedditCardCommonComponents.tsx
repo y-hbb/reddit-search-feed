@@ -4,15 +4,12 @@ import { nanoid } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import React, { lazy } from 'react';
-import { A11y, Navigation } from 'swiper';
-// Import Swiper styles
+import { A11y, Lazy, Navigation } from 'swiper';
 import 'swiper/css';
+import 'swiper/css/lazy';
 import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
-// Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { useAppDispatch } from '../../store/AppStore';
+import { useAppDispatch, useAppSelector } from '../../store/AppStore';
 import { actions } from '../../store/RootReducer';
 
 export const PostTitle = function (props: any) {
@@ -46,6 +43,9 @@ export const PostSubHeader = function (props: any) {
                 result.push(<>{'Spolier'}</>)
             if (props.data?.crosspost_parent)
                 result.push(<>{'Crossposted'}</>)
+            if (postType(props.data) && !props.data?.crosspost_parent)
+                result.push(<><Chip size="small" label={postType(props.data)?.mediaType.toLowerCase()} variant="outlined" onDelete={() => { }} /></>)
+
             result.push(<>{props.data?.domain}</>)
             return result.map((s, i, a) => i != a.length - 1 ? <Box component="span" key={i}><Typography component="span" >{s}</Typography><Typography component="span"> | </Typography></Box> : <Typography key={i} component="span">{s}</Typography>)
         })()
@@ -85,8 +85,8 @@ export function postType(data: any): PostType | undefined {
         else if (data?.secure_media_embed)
             return { mediaType: MEDIA_TYPE.EMBED, content: data?.secure_media_embed }
     }
-    if (data?.selftext !== "") {
-        return { mediaType: MEDIA_TYPE.TEXT, content: data?.preview?.images[0]?.variants?.mp4 }
+    if (data?.selftext !== "" || data?.is_self) {
+        return { mediaType: MEDIA_TYPE.TEXT, content: data?.selftext }
     }
     if (data?.post_hint === "link") {
         if (data?.preview?.reddit_video_preview)
@@ -104,26 +104,46 @@ export function postType(data: any): PostType | undefined {
 }
 
 export const LoadContent = function (props: any) {
+    const mediaMaxQuality = useAppSelector((state) => state.mediaMaxQuality)
     const data = postType(props.data)
 
     const type = data?.mediaType
     const content = data?.content
 
     if (type === MEDIA_TYPE.TEXT) {
-        const ReactMarkdown = lazy(() => import('react-markdown'))
-        return <ReactMarkdown>{props.data?.selftext}</ReactMarkdown>
+        const text = (new String(props.data?.selftext)).toString()
+        if (text !== "") {
+            const ReactMarkdown = lazy(() => import('react-markdown'))
+            return <ReactMarkdown>{text}</ReactMarkdown>
+        } else {
+            return <>Nothing to show</>
+        }
     }
     if (type === MEDIA_TYPE.GIF) {
+        let index = 1
+        if (props.data?.preview.images[0].variants.mp4.resolutions.length >= mediaMaxQuality.gif) {
+            index = mediaMaxQuality.gif
+        } else {
+            index = props.data?.preview.images[0].variants.mp4.resolutions.length
+        }
+        index--;
         return <>
-            <video loop width="100%" controls src={props.data?.preview.images[0].variants.mp4.resolutions[0].url} >
+            <video loop width="100%" controls src={props.data?.preview.images[0].variants.mp4.resolutions[index].url} >
 
             </video>
         </>
     }
     if (type === MEDIA_TYPE.IMAGE) {
+        let index = 1
+        if (props.data?.preview.images[0].resolutions.length >= mediaMaxQuality.image) {
+            index = mediaMaxQuality.image
+        } else {
+            index = props.data?.preview.images[0].resolutions.length
+        }
+        index--;
         return <>
-            <img style={{ display: 'block', margin: 'auto' }}
-                src={props.data?.preview.images[0].resolutions[0].url} width={props.data?.preview.images[0].resolutions[0].width} />
+            <img loading='lazy' style={{ display: 'block', margin: 'auto' }}
+                src={props.data?.preview.images[0].resolutions[index].url} width="100%" />
         </>
     }
     if (type === MEDIA_TYPE.RPAN) {
@@ -139,8 +159,15 @@ export const LoadContent = function (props: any) {
     }
     if (type === MEDIA_TYPE.VIDEO) {
         const DashVideoComponent = lazy(() => import('../DashVideoComponent'))
+        let index = 1
+        if (props.data?.preview.images[0].resolutions.length >= mediaMaxQuality.image) {
+            index = mediaMaxQuality.image
+        } else {
+            index = props.data?.preview.images[0].resolutions.length
+        }
+        index--;
         return <>
-            <DashVideoComponent poster={props.data?.preview?.images[0].resolutions[0].url} src={content.dash_url} />
+            <DashVideoComponent poster={props.data?.preview?.images[0].resolutions[index].url} src={content.dash_url} />
         </>
     }
     if (type === MEDIA_TYPE.EMBED) {
@@ -150,21 +177,30 @@ export const LoadContent = function (props: any) {
     }
     if (type === MEDIA_TYPE.GALLERY) {
         let slides: any;
+
         if (props.data?.gallery_data) {
             slides = (props.data?.gallery_data.items as any[]).map((v) => {
-                const img = props.data?.media_metadata[v.media_id].p[0]
+                let index = 1
+                if (props.data?.media_metadata[v.media_id].p.length >= mediaMaxQuality.image) {
+                    index = mediaMaxQuality.image
+                } else {
+                    index = props.data?.media_metadata[v.media_id].p.length
+                }
+                index--;
+                const img = props.data?.media_metadata[v.media_id].p[index]
 
                 return <SwiperSlide key={v.media_id}><img style={{ display: 'block', margin: 'auto' }}
-                    src={img.u} width={img.x} /></SwiperSlide>
+                    src={img.u} width="100%" /></SwiperSlide>
             })
         }
 
         return <>
             <Swiper
-                modules={[Navigation, A11y]}
+                modules={[Navigation, A11y, Lazy]}
                 spaceBetween={50}
                 slidesPerView={1}
                 navigation
+                lazy
             >
                 {slides}
 

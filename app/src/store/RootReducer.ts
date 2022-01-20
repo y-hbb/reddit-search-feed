@@ -39,13 +39,34 @@ const feedDataSlice = createSlice({
     },
   },
 });
+type MaxQuality = {
+  image: number;
+  gif: number;
+};
+const mediaMaxQualitySlice = createSlice({
+  name: "mediaMaxQuality",
+  initialState: { gif: 2, image: 2 } as MaxQuality,
+  reducers: {
+    setMaxQuality: (state, action: PayloadAction<any>) => {
+      if (action.payload.gif) {
+        state.gif = action.payload.gif;
+      }
+      if (action.payload.image) {
+        state.image = action.payload.image;
+      }
+      return state;
+    },
+  },
+});
 
 export default {
   excludeItem: excludeItemSlice.reducer,
-  searchData: feedDataSlice.reducer,
+  feedData: feedDataSlice.reducer,
+  mediaMaxQuality: mediaMaxQualitySlice.reducer,
 };
 
 export const actions = {
   ...excludeItemSlice.actions,
   ...feedDataSlice.actions,
+  ...mediaMaxQualitySlice.actions,
 };

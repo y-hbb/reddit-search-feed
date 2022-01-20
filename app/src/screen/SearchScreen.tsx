@@ -11,7 +11,7 @@ import { actions } from '../store/RootReducer'
 
 function SearchScreen() {
 
-    const searchData = useAppSelector((state) => state.searchData)
+    const feedData = useAppSelector((state) => state.feedData)
     const dispatch = useAppDispatch()
     const [data, setData] = useImmer([] as any[])
     const excludeItem = useAppSelector((state) => state.excludeItem)
@@ -61,7 +61,7 @@ function SearchScreen() {
     }
     async function loadMore() {
         setIsNextPageLoading(true)
-        const result = await reddit.search({ ...searchOptions, after: searchData.after })
+        const result = await reddit.search({ ...searchOptions, after: feedData.after })
         setIsNextPageLoading(false)
 
         if (result.data.after) {
