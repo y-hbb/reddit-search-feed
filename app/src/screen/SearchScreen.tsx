@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useImmer } from "use-immer"
 import FeedComponent from '../components/FeedComponent'
 import LayoutComponent from '../components/LayoutComponent'
@@ -20,7 +20,24 @@ function SearchScreen() {
 
     const [hasNextPage, setHasNextPage] = useState(false)
     const [isNextPageLoading, setIsNextPageLoading] = useState(false)
+    function filterData() {
+        setData((draft) => {
+            draft.forEach((v) => {
+                let has = false
+                excludeItem.forEach((e) => {
+                    if ('r/' + e.data === 'r/' + v.data.subreddit || 'u/' + e.data === 'u/' + v.data.author)
+                        has = true
+                })
+                if (has) {
+                    v.customExclude = true
+                } else {
+                    v.customExclude = false
+                }
+            })
 
+            return draft
+        })
+    }
     async function onSearch(sop: SearchOptions) {
         setsearchOptions(sop)
         setIsNextPageLoading(true)
@@ -30,10 +47,17 @@ function SearchScreen() {
         if (result.data.after) {
             setHasNextPage(true)
             dispatch(actions.setAfter(result.data.after))
+        } else {
+            setHasNextPage(false)
+            dispatch(actions.setAfter(result.data.after))
         }
 
-        console.log(result.data.children)
-        setData(result.data.children)
+        console.log(result)
+        setData((draft) => {
+            draft = result.data.children
+            return draft
+        })
+        filterData()
     }
     async function loadMore() {
         setIsNextPageLoading(true)
@@ -43,28 +67,25 @@ function SearchScreen() {
         if (result.data.after) {
             setHasNextPage(true)
             dispatch(actions.setAfter(result.data.after))
+        } else {
+            setHasNextPage(false)
+            dispatch(actions.setAfter(result.data.after))
         }
-        console.log(result.data.children)
+
+        console.log(result)
         setData(draft => {
             draft.push(...result.data.children)
             return draft
         })
+
+        filterData()
     }
-    /* useEffect(() => {
-        setData((draft) => {
-            return draft.filter((v) => {
-                let has = false
-                excludeItem.forEach((e) => {
-                    if ('r/' + e.data === 'r/' + v.data.subreddit || 'u/' + e.data === 'u/' + v.data.author)
-                        has = true
-                })
-                return !has
-            })
-        })
+    useEffect(() => {
+        filterData()
         return () => {
 
         }
-    }, [excludeItem]) */
+    }, [excludeItem])
     return (
         <>
             <LayoutComponent>
@@ -76,3 +97,5 @@ function SearchScreen() {
 }
 
 export default SearchScreen
+
+

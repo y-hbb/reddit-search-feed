@@ -38,16 +38,14 @@ function FeedComponent(props: FeedComponentProps) {
     expandMap.set(VIEW.EXPANDED2, 4)
     expandMap.set(VIEW.EXPANDED3, 3)
 
+    const data = props.data.filter(v => !v.customExclude)
+
     if (view === VIEW.COMPACT)
-        list = props.data.map((s) => <Grid key={s.data.id} item><RedditCardComponent view={view} data={s.data} /></Grid>)
+        list = data.map((s) => <Grid key={s.data.id} item><RedditCardComponent view={view} data={s.data} /></Grid>)
     else if ((view === VIEW.EXPANDED1 || view === VIEW.EXPANDED2 || view === VIEW.EXPANDED3))
-        list = props.data.map((s) => <Grid key={s.data.id} item xs={expandMap.get(view)}><RedditCardComponent view={view} data={s.data} /></Grid>)
+        list = data.map((s) => <Grid key={s.data.id} item xs={expandMap.get(view)}><RedditCardComponent view={view} data={s.data} /></Grid>)
 
 
-
-    const itemCount = props.hasNextPage ? props.data.length + 1 : props.data.length;
-    const loadMoreItems = props.isNextPageLoading ? () => { } : props.loadNextPage;
-    const isItemLoaded = (index: number) => !props.hasNextPage || index < props.data.length;
     return (
         <Stack mb={2} direction='column' spacing={2}>
             {matches &&
@@ -90,14 +88,14 @@ function FeedComponent(props: FeedComponentProps) {
 
                 </ToggleButtonGroup>
             }
-            {props.data.length > 0 &&
+            {data.length > 0 &&
                 <Grid container spacing={2} >
                     {list}
                 </Grid>
             }
 
 
-            {props.data.length == 0 &&
+            {data.length == 0 &&
                 <Box>No posts</Box>
             }
             {props.hasNextPage && !props.isNextPageLoading &&

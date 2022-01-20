@@ -29,8 +29,8 @@ const excludeItemSlice = createSlice({
   },
 });
 
-const searchDataSlice = createSlice({
-  name: "searchData",
+const feedDataSlice = createSlice({
+  name: "feedData",
   initialState: {} as any,
   reducers: {
     setAfter: (state, action: PayloadAction<any>) => {
@@ -42,10 +42,10 @@ const searchDataSlice = createSlice({
 
 export default {
   excludeItem: excludeItemSlice.reducer,
-  searchData: searchDataSlice.reducer,
+  searchData: feedDataSlice.reducer,
 };
 
 export const actions = {
   ...excludeItemSlice.actions,
-  ...searchDataSlice.actions,
+  ...feedDataSlice.actions,
 };
