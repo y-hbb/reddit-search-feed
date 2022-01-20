@@ -34,7 +34,7 @@ export const PostTitle = function (props: any) {
             open={open}
             onClose={() => { setOpen(false) }}
         >
-            <Box p={3} overflow={'auto'}>
+            <Box p={3} height='100%' overflow='auto'>
                 <Box width={'100%'} display='flex' sx={{ flexFlow: 'row-reverse' }} p={2}>
                     <Button onClick={() => { setOpen(false) }}><Close sx={{ color: 'white' }} /></Button>
                 </Box>

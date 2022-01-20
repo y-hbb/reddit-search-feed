@@ -41,9 +41,9 @@ function FeedComponent(props: FeedComponentProps) {
     const data = props.data.filter(v => !v.customExclude)
 
     if (view === VIEW.COMPACT)
-        list = data.map((s) => <Grid key={s.data.id} item><RedditCardComponent view={view} data={s.data} /></Grid>)
+        list = data.map((s) => <Grid p={1} key={s.data.id} item><RedditCardComponent view={view} data={s.data} /></Grid>)
     else if ((view === VIEW.EXPANDED1 || view === VIEW.EXPANDED2 || view === VIEW.EXPANDED3))
-        list = data.map((s) => <Grid key={s.data.id} item xs={expandMap.get(view)}><RedditCardComponent view={view} data={s.data} /></Grid>)
+        list = data.map((s) => <Grid p={1} key={s.data.id} item xs={expandMap.get(view)}><RedditCardComponent view={view} data={s.data} /></Grid>)
 
 
     return (
@@ -89,7 +89,7 @@ function FeedComponent(props: FeedComponentProps) {
                 </ToggleButtonGroup>
             }
             {data.length > 0 &&
-                <Grid container spacing={2} >
+                <Grid width='100%' container spacing={2} >
                     {list}
                 </Grid>
             }
