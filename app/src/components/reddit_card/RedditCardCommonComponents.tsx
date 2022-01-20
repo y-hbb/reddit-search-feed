@@ -1,4 +1,5 @@
-import { Chip, Typography } from '@mui/material';
+import { Close } from '@mui/icons-material';
+import { Button, Chip, Modal, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { nanoid } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
@@ -11,20 +12,37 @@ import 'swiper/css/navigation';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { useAppDispatch, useAppSelector } from '../../store/AppStore';
 import { actions } from '../../store/RootReducer';
+import RedditCardExpandedComponent from './RedditCardExpandedComponent';
 
 export const PostTitle = function (props: any) {
+    const [open, setOpen] = React.useState(false);
     const ReactMarkdown = lazy(() => import('react-markdown'))
     const dispatch = useAppDispatch()
     return <>
         <Chip label={'r/' + props.data?.subreddit} variant="outlined" size="small" onDelete={() => {
             dispatch(actions.addExclude({ id: nanoid(), data: props.data?.subreddit, type: 'subreddit' }))
         }} />
+        <Button sx={{ textAlign: 'left' }} variant='text' onClick={() => { setOpen(true) }} >
+            <ReactMarkdown components={{
+                p({ node, className, children, ...props }) {
+                    return (<p className={className} style={{ margin: '0' }}>{children}</p>)
+                }
+            }} children={props.data?.title} />
+        </Button>
 
-        <ReactMarkdown components={{
-            p({ node, className, children, ...props }) {
-                return (<p className={className} style={{ margin: '0' }}>{children}</p>)
-            }
-        }} children={props.data?.title} />
+        <Modal
+            open={open}
+            onClose={() => { setOpen(false) }}
+        >
+            <Box p={3} overflow={'auto'}>
+                <Box width={'100%'} display='flex' sx={{ flexFlow: 'row-reverse' }} p={2}>
+                    <Button onClick={() => { setOpen(false) }}><Close sx={{ color: 'white' }} /></Button>
+                </Box>
+                <RedditCardExpandedComponent height={'100%'} data={props.data} />
+            </Box>
+
+
+        </Modal>
     </>
 }
 

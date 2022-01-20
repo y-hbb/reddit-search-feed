@@ -7,7 +7,8 @@ import { LoadContent, PostSubHeader, PostTitle } from './RedditCardCommonCompone
 import RedditCardCompactComponent from './RedditCardCompactComponent';
 
 type RedditCardExpandedComponentProps = {
-    data: any
+    data: any,
+    height?: number | string
 }
 function RedditCardExpandedComponent(props: RedditCardExpandedComponentProps) {
     dayjs.extend(relativeTime)
@@ -18,28 +19,26 @@ function RedditCardExpandedComponent(props: RedditCardExpandedComponentProps) {
 
 
     return (
-        <Grid xs={12} item>
-            <Card sx={{ overflow: 'auto', maxHeight: 500 }}>
+        <Card sx={{ overflow: 'auto', maxHeight: props.height || 500 }}>
 
-                <CardHeader title={title} subheader={subheader} />
-                <CardContent>
-                    {!props.data?.crosspost_parent &&
-                        <LoadContent data={props.data} />
-                    }
+            <CardHeader title={title} subheader={subheader} />
+            <CardContent>
+                {!props.data?.crosspost_parent &&
+                    <LoadContent data={props.data} />
+                }
 
-                    {props.data?.crosspost_parent &&
-                        <Stack spacing={2}>
-                            <RedditCardCompactComponent data={props.data?.crosspost_parent_list[0]} />
-                            <Box>
-                                <LoadContent data={props.data?.crosspost_parent_list[0]} />
-                            </Box>
-                        </Stack>
+                {props.data?.crosspost_parent &&
+                    <Stack spacing={2}>
+                        <RedditCardCompactComponent data={props.data?.crosspost_parent_list[0]} />
+                        <Box>
+                            <LoadContent data={props.data?.crosspost_parent_list[0]} />
+                        </Box>
+                    </Stack>
 
-                    }
+                }
 
-                </CardContent>
-            </Card>
-        </Grid >
+            </CardContent>
+        </Card>
     )
 }
 
