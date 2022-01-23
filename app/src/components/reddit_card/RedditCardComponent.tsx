@@ -17,7 +17,7 @@ function RedditCardComponent(props: RedditCardComponentProps) {
         return <RedditCardCompactComponent data={data} />
     }
 
-    return <Suspense fallback={<RedditCardCompactEmptyComponent />}>{useMemo(() => card({ data: props.data, view: props.view }), [props.data, props.view])}</Suspense>
+    return <Suspense fallback>{useMemo(() => card({ data: props.data, view: props.view }), [props.data, props.view])}</Suspense>
 
 
 }

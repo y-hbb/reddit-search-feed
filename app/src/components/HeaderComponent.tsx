@@ -9,10 +9,10 @@ function HeaderComponent() {
     const dispatch = useAppDispatch()
     const [open, setOpen] = React.useState(false);
     return (<>
-        <AppBar position="sticky">
+        <AppBar position="relative">
             <Toolbar>
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                    Title
+                    SearchIt
                 </Typography>
                 <IconButton
                     size="large"
@@ -36,7 +36,7 @@ function HeaderComponent() {
                 bgcolor: 'background.paper',
                 height: '100%',
             }}>
-                <AppBar position="sticky">
+                <AppBar position="relative">
                     <Toolbar>
                         <Typography id="modal-modal-title" variant="h6" component="div" sx={{ flexGrow: 1 }}>
                             Settings

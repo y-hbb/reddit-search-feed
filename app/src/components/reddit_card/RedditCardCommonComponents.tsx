@@ -1,5 +1,4 @@
-import { Close } from '@mui/icons-material';
-import { Button, Chip, Modal, Typography } from '@mui/material';
+import { Button, Chip, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { nanoid } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
@@ -12,37 +11,23 @@ import 'swiper/css/navigation';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { useAppDispatch, useAppSelector } from '../../store/AppStore';
 import { actions } from '../../store/RootReducer';
-import RedditCardExpandedComponent from './RedditCardExpandedComponent';
 
 export const PostTitle = function (props: any) {
-    const [open, setOpen] = React.useState(false);
     const ReactMarkdown = lazy(() => import('react-markdown'))
     const dispatch = useAppDispatch()
+
+    //const postSwiper = useAppSelector((state) => state.postSwiper)
     return <>
         <Chip label={'r/' + props.data?.subreddit} variant="outlined" size="small" onDelete={() => {
             dispatch(actions.addExclude({ id: nanoid(), data: props.data?.subreddit, type: 'subreddit' }))
         }} />
-        <Button sx={{ textAlign: 'left' }} variant='text' onClick={() => { setOpen(true) }} >
+        <Button sx={{ textAlign: 'left' }} variant='text' onClick={() => { dispatch(actions.openPostSwiper({ isOpen: true, customIndex: props.data?.customIndex })) }} >
             <ReactMarkdown components={{
                 p({ node, className, children, ...props }) {
                     return (<p className={className} style={{ margin: '0' }}>{children}</p>)
                 }
             }} children={props.data?.title} />
         </Button>
-
-        <Modal
-            open={open}
-            onClose={() => { setOpen(false) }}
-        >
-            <Box p={3} height='100%' overflow='auto'>
-                <Box width={'100%'} display='flex' sx={{ flexFlow: 'row-reverse' }} p={2}>
-                    <Button onClick={() => { setOpen(false) }}><Close sx={{ color: 'white' }} /></Button>
-                </Box>
-                <RedditCardExpandedComponent height={'100%'} data={props.data} />
-            </Box>
-
-
-        </Modal>
     </>
 }
 
@@ -62,7 +47,7 @@ export const PostSubHeader = function (props: any) {
             if (props.data?.crosspost_parent)
                 result.push(<>{'Crossposted'}</>)
             if (postType(props.data) && !props.data?.crosspost_parent)
-                result.push(<><Chip size="small" label={postType(props.data)?.mediaType.toLowerCase()} variant="outlined" onDelete={() => { }} /></>)
+                result.push(<>{postType(props.data)?.mediaType.toLowerCase()}</>)
 
             result.push(<>{props.data?.domain}</>)
             return result.map((s, i, a) => i != a.length - 1 ? <Box component="span" key={i}><Typography component="span" >{s}</Typography><Typography component="span"> | </Typography></Box> : <Typography key={i} component="span">{s}</Typography>)
@@ -132,7 +117,7 @@ export const LoadContent = function (props: any) {
         const text = (new String(props.data?.selftext)).toString()
         if (text !== "") {
             const ReactMarkdown = lazy(() => import('react-markdown'))
-            return <ReactMarkdown>{text}</ReactMarkdown>
+            return <Box ><ReactMarkdown>{text}</ReactMarkdown></Box>
         } else {
             return <>Nothing to show</>
         }
@@ -159,9 +144,10 @@ export const LoadContent = function (props: any) {
             index = props.data?.preview.images[0].resolutions.length
         }
         index--;
+        const img = props.data?.preview.images[0].resolutions[index]
         return <>
             <img loading='lazy' style={{ display: 'block', margin: 'auto' }}
-                src={props.data?.preview.images[0].resolutions[index].url} width="100%" />
+                src={img.url} width="100%" />
         </>
     }
     if (type === MEDIA_TYPE.RPAN) {

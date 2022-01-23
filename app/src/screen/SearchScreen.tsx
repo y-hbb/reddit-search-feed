@@ -22,8 +22,9 @@ function SearchScreen() {
     const [isNextPageLoading, setIsNextPageLoading] = useState(false)
     function filterData() {
         setData((draft) => {
-            draft.forEach((v) => {
+            draft.forEach((v, i) => {
                 let has = false
+                v.customIndex = i;
                 excludeItem.forEach((e) => {
                     if ('r/' + e.data === 'r/' + v.data.subreddit || 'u/' + e.data === 'u/' + v.data.author)
                         has = true

@@ -8,7 +8,8 @@ import RedditCardCompactComponent from './RedditCardCompactComponent';
 
 type RedditCardExpandedComponentProps = {
     data: any,
-    height?: number | string
+    maxHeight?: number | string,
+    maxWidth?: number | string,
 }
 function RedditCardExpandedComponent(props: RedditCardExpandedComponentProps) {
     dayjs.extend(relativeTime)
@@ -19,7 +20,7 @@ function RedditCardExpandedComponent(props: RedditCardExpandedComponentProps) {
 
 
     return (
-        <Card sx={{ overflow: 'auto', maxHeight: props.height || 500 }}>
+        <Card sx={{ overflow: 'auto', maxHeight: props.maxHeight || 500, maxWidth: props.maxWidth, margin: 'auto' }}>
 
             <CardHeader title={title} subheader={subheader} />
             <CardContent>

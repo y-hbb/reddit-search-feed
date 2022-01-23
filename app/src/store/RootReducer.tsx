@@ -1,4 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import React from 'react';
+import Swiper from "swiper";
 
 type ExcludeItem = {
   id: string;
@@ -59,14 +61,34 @@ const mediaMaxQualitySlice = createSlice({
   },
 });
 
+type PostSwiper = {
+  isOpen: boolean, customIndex: number
+}
+
+const postSwiperSlice = createSlice({
+  name: "postSwiper",
+  initialState: { isOpen: false, customIndex: 0 } as PostSwiper,
+  reducers: {
+    openPostSwiper: (state, action: PayloadAction<any>) => {
+      state.isOpen = action.payload.isOpen;
+      if (action.payload.customIndex)
+        state.customIndex = action.payload.customIndex;
+
+      return state;
+    }
+  },
+});
+
 export default {
   excludeItem: excludeItemSlice.reducer,
   feedData: feedDataSlice.reducer,
   mediaMaxQuality: mediaMaxQualitySlice.reducer,
+  postSwiper: postSwiperSlice.reducer
 };
 
 export const actions = {
   ...excludeItemSlice.actions,
   ...feedDataSlice.actions,
   ...mediaMaxQualitySlice.actions,
+  ...postSwiperSlice.actions
 };

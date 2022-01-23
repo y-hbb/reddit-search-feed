@@ -6,7 +6,7 @@ import React, { useContext } from 'react'
 function FooterComponent() {
 
     return (
-        <Box borderTop='solid 1px #ddd' width="100%" position="sticky" bottom="0" bgcolor="white" padding={1}>SearchIt. Unofficial Reddit client. Powered by <a href="https://www.reddit.com/dev/api">Reddit API</a></Box>
+        <Box borderTop='solid 1px #ddd' width="100%" bgcolor="white" padding={1}>SearchIt. Powered by <a href="https://www.reddit.com/dev/api">Reddit API</a></Box>
     )
 }
 
