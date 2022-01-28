@@ -3,12 +3,12 @@ import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 import ViewComfyIcon from '@mui/icons-material/ViewComfy';
 import ViewCozyIcon from '@mui/icons-material/ViewCozy';
-import { Button, Grid, Modal, Stack, ToggleButton, ToggleButtonGroup, useMediaQuery, useTheme } from '@mui/material';
+import { Button, Grid, Modal, Stack, ToggleButton, ToggleButtonGroup, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { Box } from '@mui/system';
 import React, { Suspense, useEffect, useState } from 'react';
 import RedditCardComponent from './reddit_card/RedditCardComponent';
 import RedditCardExpandedComponent from './reddit_card/RedditCardExpandedComponent';
-import { A11y, Lazy, Navigation } from 'swiper';
+import { A11y, Lazy, Navigation, Virtual } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/lazy';
 import 'swiper/css/navigation';
@@ -47,7 +47,7 @@ function FeedComponent(props: FeedComponentProps) {
     expandMap.set(VIEW.EXPANDED2, 4)
     expandMap.set(VIEW.EXPANDED3, 3)
 
-    const data = props.data.filter(v => !v.customExclude)
+    const data = props.data.filter(v => !v.data.customExclude)
 
     if (view === VIEW.COMPACT)
         list = data.map((s) => <Grid p={1} key={s.data.id} item><RedditCardComponent view={view} data={s.data} /></Grid>)
@@ -125,18 +125,22 @@ function FeedComponent(props: FeedComponentProps) {
                 onClose={() => { dispatch(actions.openPostSwiper({ isOpen: false })) }}
             >
                 <Box p={3} height='100%' overflow='auto'>
-                    <Box width={'100%'} display='flex' sx={{ flexFlow: 'row-reverse' }} p={2}>
-                        <Button onClick={() => { dispatch(actions.openPostSwiper({ isOpen: false })) }}><Close sx={{ color: 'white' }} /></Button>
-                    </Box>
+                    <Grid container>
+                        <Grid xs={11} item>
+                            <Typography color='white'>Swipe</Typography>
+                        </Grid>
+                        <Grid xs={1} item>
+                            <Button onClick={() => { dispatch(actions.openPostSwiper({ isOpen: false })) }}><Close sx={{ color: 'white' }} /></Button>
+                        </Grid>
+                    </Grid>
                     <Suspense fallback>
                         <Swiper
-                            onAfterInit={(s) => {
-                                swiper = s;
-                            }}
-                            modules={[Navigation, A11y, Lazy]}
+                            modules={[Navigation, A11y, Lazy, Virtual]}
                             spaceBetween={50}
                             slidesPerView={1}
                             lazy
+                            initialSlide={postSwiper.customIndex}
+                            virtual
                         >
                             {slides}
 

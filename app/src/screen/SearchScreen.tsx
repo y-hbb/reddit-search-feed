@@ -24,15 +24,15 @@ function SearchScreen() {
         setData((draft) => {
             draft.forEach((v, i) => {
                 let has = false
-                v.customIndex = i;
+                v.data.customIndex = i;
                 excludeItem.forEach((e) => {
                     if ('r/' + e.data === 'r/' + v.data.subreddit || 'u/' + e.data === 'u/' + v.data.author)
                         has = true
                 })
                 if (has) {
-                    v.customExclude = true
+                    v.data.customExclude = true
                 } else {
-                    v.customExclude = false
+                    v.data.customExclude = false
                 }
             })
 
