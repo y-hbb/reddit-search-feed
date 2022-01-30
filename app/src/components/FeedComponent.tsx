@@ -3,21 +3,21 @@ import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 import ViewComfyIcon from '@mui/icons-material/ViewComfy';
 import ViewCozyIcon from '@mui/icons-material/ViewCozy';
-import { Button, Grid, Modal, Stack, ToggleButton, ToggleButtonGroup, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Button, CircularProgress, Grid, Modal, Stack, ToggleButton, ToggleButtonGroup, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { Box } from '@mui/system';
-import React, { Suspense, useEffect, useState } from 'react';
-import RedditCardComponent from './reddit_card/RedditCardComponent';
-import RedditCardExpandedComponent from './reddit_card/RedditCardExpandedComponent';
+import React, { Suspense, useState } from 'react';
 import { A11y, Lazy, Navigation, Virtual } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/lazy';
 import 'swiper/css/navigation';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { useFilterPosts } from '../hooks/RedditHooks';
 import { useAppDispatch, useAppSelector } from '../store/AppStore';
 import { actions } from '../store/RootReducer';
+import RedditCardComponent from './reddit_card/RedditCardComponent';
+import RedditCardExpandedComponent from './reddit_card/RedditCardExpandedComponent';
 
 type FeedComponentProps = {
-    data: any[],
     hasNextPage: boolean,
     isNextPageLoading: boolean,
     loadNextPage: () => void
@@ -47,7 +47,7 @@ function FeedComponent(props: FeedComponentProps) {
     expandMap.set(VIEW.EXPANDED2, 4)
     expandMap.set(VIEW.EXPANDED3, 3)
 
-    const data = props.data.filter(v => !v.data.customExclude)
+    const data = useFilterPosts()
 
     if (view === VIEW.COMPACT)
         list = data.map((s) => <Grid p={1} key={s.data.id} item><RedditCardComponent view={view} data={s.data} /></Grid>)
@@ -60,7 +60,7 @@ function FeedComponent(props: FeedComponentProps) {
 
     const postSwiper = useAppSelector((state) => state.postSwiper)
 
-    let swiper: any;
+    const swipeIndex = data.findIndex((v) => v.data.id === postSwiper.id)
 
     return (
         <Stack mb={2} direction='column' spacing={2}>
@@ -118,7 +118,10 @@ function FeedComponent(props: FeedComponentProps) {
                 <Button onClick={() => { props.loadNextPage() }}>Load More</Button>
             }
             {props.isNextPageLoading &&
-                <Box display='flex' alignItems='center' justifyContent='space-around' m='0 !important' width="100%" height="100%" top={0} left={0} position='fixed' bgcolor='#fffa'><Box>Loading...</Box></Box>
+                <Button disabled>Loading...</Button>
+            }
+            {props.isNextPageLoading &&
+                <Box display='flex' alignItems='center' justifyContent='space-around' m='0 !important' width="100%" height="100%" top={0} left={0} position='fixed' bgcolor='#fffa'><CircularProgress /></Box>
             }
             <Modal
                 open={postSwiper.isOpen}
@@ -139,7 +142,7 @@ function FeedComponent(props: FeedComponentProps) {
                             spaceBetween={50}
                             slidesPerView={1}
                             lazy
-                            initialSlide={postSwiper.customIndex}
+                            initialSlide={swipeIndex}
                             virtual
                         >
                             {slides}

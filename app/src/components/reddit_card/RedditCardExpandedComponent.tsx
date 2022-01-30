@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, Grid, Stack } from '@mui/material';
+import { Card, CardContent, CardHeader, Stack } from '@mui/material';
 import { Box } from '@mui/system';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -16,8 +16,6 @@ function RedditCardExpandedComponent(props: RedditCardExpandedComponentProps) {
 
     const title = <PostTitle data={props.data} />
     const subheader = <PostSubHeader data={props.data} />
-
-
 
     return (
         <Card sx={{ overflow: 'auto', maxHeight: props.maxHeight || 500, maxWidth: props.maxWidth, margin: 'auto' }}>

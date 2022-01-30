@@ -1,6 +1,5 @@
 import { Button, Chip, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import { nanoid } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import React, { lazy } from 'react';
@@ -16,12 +15,11 @@ export const PostTitle = function (props: any) {
     const ReactMarkdown = lazy(() => import('react-markdown'))
     const dispatch = useAppDispatch()
 
-    //const postSwiper = useAppSelector((state) => state.postSwiper)
     return <>
         <Chip label={'r/' + props.data?.subreddit} variant="outlined" size="small" onDelete={() => {
-            dispatch(actions.addExclude({ id: nanoid(), data: props.data?.subreddit, type: 'subreddit' }))
+            dispatch(actions.addExclude({ data: props.data?.subreddit, type: 'subreddit' }))
         }} />
-        <Button sx={{ textAlign: 'left' }} variant='text' onClick={() => { dispatch(actions.openPostSwiper({ isOpen: true, customIndex: props.data?.customIndex })) }} >
+        <Button sx={{ textAlign: 'left' }} variant='text' onClick={() => { dispatch(actions.openPostSwiper({ isOpen: true, id: props.data?.id })) }} >
             <ReactMarkdown components={{
                 p({ node, className, children, ...props }) {
                     return (<p className={className} style={{ margin: '0' }}>{children}</p>)
@@ -38,7 +36,7 @@ export const PostSubHeader = function (props: any) {
     return <>
         <Typography variant='subtitle2'>{(() => {
             const result = [<>{dayjs.unix(props.data?.created).fromNow()}</>, <><Chip size="small" label={'u/' + props.data?.author} variant="outlined" onDelete={() => {
-                dispatch(actions.addExclude({ id: nanoid(), data: props.data?.author, type: 'author' }))
+                dispatch(actions.addExclude({ data: props.data?.author, type: 'author' }))
             }} /></>]
             if (props.data?.over_18)
                 result.push(<>{'NSFW'}</>)

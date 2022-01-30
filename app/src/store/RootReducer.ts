@@ -1,9 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import React from 'react';
-import Swiper from "swiper";
 
 type ExcludeItem = {
-  id: string;
   data: string;
   type: "author" | "subreddit";
 };
@@ -33,10 +30,18 @@ const excludeItemSlice = createSlice({
 
 const feedDataSlice = createSlice({
   name: "feedData",
-  initialState: {} as any,
+  initialState: { after: '', feedData: [] } as { after: string, feedData: any[] },
   reducers: {
     setAfter: (state, action: PayloadAction<any>) => {
       state.after = action.payload;
+      return state;
+    },
+    addFeedData: (state, action: PayloadAction<any[]>) => {
+      state.feedData = action.payload;
+      return state;
+    },
+    updateFeedData: (state, action: PayloadAction<any[]>) => {
+      state.feedData.push(...action.payload);
       return state;
     },
   },
@@ -62,17 +67,17 @@ const mediaMaxQualitySlice = createSlice({
 });
 
 type PostSwiper = {
-  isOpen: boolean, customIndex: number
+  isOpen: boolean, id: number
 }
 
 const postSwiperSlice = createSlice({
   name: "postSwiper",
-  initialState: { isOpen: false, customIndex: 0 } as PostSwiper,
+  initialState: { isOpen: false, id: 0 } as PostSwiper,
   reducers: {
     openPostSwiper: (state, action: PayloadAction<any>) => {
       state.isOpen = action.payload.isOpen;
-      if (action.payload.customIndex)
-        state.customIndex = action.payload.customIndex;
+      if (action.payload.id)
+        state.id = action.payload.id;
 
       return state;
     }

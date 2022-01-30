@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { useImmer } from "use-immer"
+import React, { useState } from 'react'
 import FeedComponent from '../components/FeedComponent'
 import LayoutComponent from '../components/LayoutComponent'
 import SearchComponent, { SearchOptions } from '../components/SearchComponent'
@@ -11,34 +10,13 @@ import { actions } from '../store/RootReducer'
 
 function SearchScreen() {
 
-    const feedData = useAppSelector((state) => state.feedData)
+    const after = useAppSelector((state) => state.feedData.after)
     const dispatch = useAppDispatch()
-    const [data, setData] = useImmer([] as any[])
-    const excludeItem = useAppSelector((state) => state.excludeItem)
-
     const [searchOptions, setsearchOptions] = useState({} as SearchOptions)
 
     const [hasNextPage, setHasNextPage] = useState(false)
     const [isNextPageLoading, setIsNextPageLoading] = useState(false)
-    function filterData() {
-        setData((draft) => {
-            draft.forEach((v, i) => {
-                let has = false
-                v.data.customIndex = i;
-                excludeItem.forEach((e) => {
-                    if ('r/' + e.data === 'r/' + v.data.subreddit || 'u/' + e.data === 'u/' + v.data.author)
-                        has = true
-                })
-                if (has) {
-                    v.data.customExclude = true
-                } else {
-                    v.data.customExclude = false
-                }
-            })
 
-            return draft
-        })
-    }
     async function onSearch(sop: SearchOptions) {
         setsearchOptions(sop)
         setIsNextPageLoading(true)
@@ -54,15 +32,11 @@ function SearchScreen() {
         }
 
         console.log(result)
-        setData((draft) => {
-            draft = result.data.children
-            return draft
-        })
-        filterData()
+        dispatch(actions.addFeedData(result.data.children))
     }
     async function loadMore() {
         setIsNextPageLoading(true)
-        const result = await reddit.search({ ...searchOptions, after: feedData.after })
+        const result = await reddit.search({ ...searchOptions, after: after })
         setIsNextPageLoading(false)
 
         if (result.data.after) {
@@ -74,24 +48,13 @@ function SearchScreen() {
         }
 
         console.log(result)
-        setData(draft => {
-            draft.push(...result.data.children)
-            return draft
-        })
-
-        filterData()
+        dispatch(actions.updateFeedData(result.data.children))
     }
-    useEffect(() => {
-        filterData()
-        return () => {
-
-        }
-    }, [excludeItem])
     return (
         <>
             <LayoutComponent>
                 <SearchComponent search={onSearch} />
-                <FeedComponent hasNextPage={hasNextPage} isNextPageLoading={isNextPageLoading} loadNextPage={loadMore} data={data} />
+                <FeedComponent hasNextPage={hasNextPage} isNextPageLoading={isNextPageLoading} loadNextPage={loadMore} />
             </LayoutComponent>
         </>
     )

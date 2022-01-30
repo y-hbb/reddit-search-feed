@@ -1,8 +1,7 @@
 import { Search } from '@mui/icons-material';
-import { Box, Chip, FormControl, FormControlLabel, FormGroup, InputLabel, MenuItem, Select, Stack, Switch, TextField, Grid, Button } from '@mui/material'
-import React, { KeyboardEvent, useState } from 'react'
-import { useAppSelector } from '../store/AppStore'
-import { useAppDispatch } from '../store/AppStore';
+import { Box, Button, Chip, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Select, Stack, Switch, TextField } from '@mui/material';
+import React, { KeyboardEvent, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../store/AppStore';
 import { actions } from '../store/RootReducer';
 
 type SearchComponentProps = {
@@ -21,7 +20,7 @@ export type SearchOptions = {
 function SearchComponent(props: SearchComponentProps) {
     const excludeItem = useAppSelector((state) => state.excludeItem)
     const dispatch = useAppDispatch()
-    const excludeList = excludeItem.map((v) => <Grid key={v.id} item><Chip label={(() => {
+    const excludeList = excludeItem.map((v, i) => <Grid key={i} item><Chip label={(() => {
         if (v.type === 'author')
             return 'u/' + v.data
         else if (v.type === 'subreddit')
