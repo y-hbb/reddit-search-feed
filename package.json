@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yashash99/reddit-search-feed.git"
+    "url": "git+https://github.com/y-hbb/reddit-search-feed.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yashash99/reddit-search-feed/issues"
+    "url": "https://github.com/y-hbb/reddit-search-feed/issues"
   },
-  "homepage": "https://github.com/yashash99/reddit-search-feed#readme",
+  "homepage": "https://github.com/y-hbb/reddit-search-feed#readme",
   "workspaces": [
     "app"
   ]
