@@ -1,10 +1,9 @@
-import { CssBaseline } from '@mui/material'
-import { Provider } from 'react-redux'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import './App.css'
-import SearchScreen from './screen/SearchScreen'
-import store from './store/AppStore'
-
+import { CssBaseline } from '@mui/material';
+import { Provider } from 'react-redux';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import './App.css';
+import SearchScreen from './screen/SearchScreen';
+import store from './store/AppStore';
 
 function App() {
   return (
@@ -16,7 +15,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </Provider>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -1,12 +1,12 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type ExcludeItem = {
   data: string;
-  type: "author" | "subreddit";
+  type: 'author' | 'subreddit';
 };
 
 const excludeItemSlice = createSlice({
-  name: "excludeItem",
+  name: 'excludeItem',
   initialState: [] as ExcludeItem[],
   reducers: {
     addExclude: (state, action: PayloadAction<ExcludeItem>) => {
@@ -29,8 +29,11 @@ const excludeItemSlice = createSlice({
 });
 
 const feedDataSlice = createSlice({
-  name: "feedData",
-  initialState: { after: '', feedData: [] } as { after: string, feedData: any[] },
+  name: 'feedData',
+  initialState: { after: '', feedData: [] } as {
+    after: string;
+    feedData: any[];
+  },
   reducers: {
     setAfter: (state, action: PayloadAction<any>) => {
       state.after = action.payload;
@@ -51,7 +54,7 @@ type MaxQuality = {
   gif: number;
 };
 const mediaMaxQualitySlice = createSlice({
-  name: "mediaMaxQuality",
+  name: 'mediaMaxQuality',
   initialState: { gif: 2, image: 2 } as MaxQuality,
   reducers: {
     setMaxQuality: (state, action: PayloadAction<any>) => {
@@ -67,20 +70,20 @@ const mediaMaxQualitySlice = createSlice({
 });
 
 type PostSwiper = {
-  isOpen: boolean, id: number
-}
+  isOpen: boolean;
+  id: number;
+};
 
 const postSwiperSlice = createSlice({
-  name: "postSwiper",
+  name: 'postSwiper',
   initialState: { isOpen: false, id: 0 } as PostSwiper,
   reducers: {
     openPostSwiper: (state, action: PayloadAction<any>) => {
       state.isOpen = action.payload.isOpen;
-      if (action.payload.id)
-        state.id = action.payload.id;
+      if (action.payload.id) state.id = action.payload.id;
 
       return state;
-    }
+    },
   },
 });
 
@@ -88,12 +91,12 @@ export default {
   excludeItem: excludeItemSlice.reducer,
   feedData: feedDataSlice.reducer,
   mediaMaxQuality: mediaMaxQualitySlice.reducer,
-  postSwiper: postSwiperSlice.reducer
+  postSwiper: postSwiperSlice.reducer,
 };
 
 export const actions = {
   ...excludeItemSlice.actions,
   ...feedDataSlice.actions,
   ...mediaMaxQualitySlice.actions,
-  ...postSwiperSlice.actions
+  ...postSwiperSlice.actions,
 };

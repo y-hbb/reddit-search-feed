@@ -5,7 +5,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm run dev -w app",
-    "build": "npm run build -w app"
+    "build": "npm run build -w app",
+    "lint": "npm run lint -w app",
+    "format": "npm run format -w app",
+    "lf": "npm run lint && npm run format"
   },
   "repository": {
     "type": "git",
