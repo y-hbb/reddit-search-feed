@@ -10,12 +10,14 @@ import {
 } from './RedditCardCommonComponents';
 import RedditCardCompactComponent from './RedditCardCompactComponent';
 
-type RedditCardExpandedComponentProps = {
+interface RedditCardExpandedComponentProps {
   data: any;
   maxHeight?: number | string;
   maxWidth?: number | string;
-};
-function RedditCardExpandedComponent(props: RedditCardExpandedComponentProps) {
+}
+function RedditCardExpandedComponent(
+  props: RedditCardExpandedComponentProps
+): JSX.Element {
   dayjs.extend(relativeTime);
 
   const title = <PostTitle data={props.data} />;
@@ -23,9 +25,10 @@ function RedditCardExpandedComponent(props: RedditCardExpandedComponentProps) {
 
   return (
     <Card
+      variant="outlined"
       sx={{
         overflow: 'auto',
-        maxHeight: props.maxHeight || 500,
+        maxHeight: props.maxHeight ?? 500,
         maxWidth: props.maxWidth,
         margin: 'auto',
       }}

@@ -28,11 +28,11 @@ import { actions } from '../store/RootReducer';
 import RedditCardComponent from './reddit_card/RedditCardComponent';
 import RedditCardExpandedComponent from './reddit_card/RedditCardExpandedComponent';
 
-type FeedComponentProps = {
+interface FeedComponentProps {
   hasNextPage: boolean;
   isNextPageLoading: boolean;
   loadNextPage: () => void;
-};
+}
 
 export enum VIEW {
   COMPACT,
@@ -42,7 +42,7 @@ export enum VIEW {
   SWIPE,
 }
 
-function FeedComponent(props: FeedComponentProps) {
+function FeedComponent(props: FeedComponentProps): JSX.Element {
   const [view, setView] = useState(VIEW.COMPACT);
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down('md'));
@@ -127,16 +127,16 @@ function FeedComponent(props: FeedComponentProps) {
           <ToggleButton value={VIEW.COMPACT} aria-label="compact">
             <ViewComfyIcon />
           </ToggleButton>
-
-          <ToggleButton value={VIEW.EXPANDED1} aria-label="full width">
-            <ViewAgendaIcon />
+          <ToggleButton value={VIEW.EXPANDED3} aria-label="4 column grid">
+            <ViewCozyIcon />
           </ToggleButton>
 
           <ToggleButton value={VIEW.EXPANDED2} aria-label="3 column grid">
             <ViewColumnIcon />
           </ToggleButton>
-          <ToggleButton value={VIEW.EXPANDED3} aria-label="4 column grid">
-            <ViewCozyIcon />
+
+          <ToggleButton value={VIEW.EXPANDED1} aria-label="full width">
+            <ViewAgendaIcon />
           </ToggleButton>
         </ToggleButtonGroup>
       )}
@@ -146,7 +146,7 @@ function FeedComponent(props: FeedComponentProps) {
         </Grid>
       )}
 
-      {data.length == 0 && <Box>No posts</Box>}
+      {data.length === 0 && <Box>No posts</Box>}
       {props.hasNextPage && !props.isNextPageLoading && (
         <Button
           onClick={() => {

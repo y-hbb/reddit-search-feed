@@ -1,9 +1,9 @@
 import { Card, CardContent, CardHeader, Skeleton } from '@mui/material';
 import React from 'react';
 
-function RedditCardCompactEmptyComponent() {
+function RedditCardCompactEmptyComponent(): JSX.Element {
   return (
-    <Card sx={{ maxWidth: { xs: '100%' } }}>
+    <Card variant="outlined" sx={{ maxWidth: { xs: '100%' } }}>
       <CardHeader
         title={<Skeleton variant="rectangular" width={'100%'} height={30} />}
         subheader={

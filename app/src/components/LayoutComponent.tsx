@@ -1,17 +1,19 @@
-import { Container } from '@mui/material';
+import { Container, colors } from '@mui/material';
 import React from 'react';
 import FooterComponent from './FooterComponent';
 import HeaderComponent from './HeaderComponent';
 
-type LayoutComponentProps = {
+interface LayoutComponentProps {
   children: React.ReactNode;
-};
+}
 
-function LayoutComponent(props: LayoutComponentProps) {
+function LayoutComponent(props: LayoutComponentProps): JSX.Element {
   return (
     <>
       <HeaderComponent />
-      <Container maxWidth="xl">{props.children}</Container>
+      <Container sx={{ bgcolor: colors.grey[100] }} maxWidth="xl">
+        {props.children}
+      </Container>
       <FooterComponent />
     </>
   );

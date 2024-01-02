@@ -2,15 +2,17 @@ import { Card, CardHeader, CardMedia } from '@mui/material';
 import React from 'react';
 import { PostSubHeader, PostTitle } from './RedditCardCommonComponents';
 
-type RedditCardCompactComponentProps = {
+interface RedditCardCompactComponentProps {
   data: any;
-};
-function RedditCardCompactComponent(props: RedditCardCompactComponentProps) {
+}
+function RedditCardCompactComponent(
+  props: RedditCardCompactComponentProps
+): JSX.Element {
   const title = <PostTitle data={props.data} />;
   const subheader = <PostSubHeader data={props.data} />;
 
-  function validURL(str: string) {
-    var pattern = new RegExp(
+  function validURL(str: string): boolean {
+    const pattern = new RegExp(
       '^(https?:\\/\\/)?' + // protocol
         '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
         '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
@@ -23,7 +25,7 @@ function RedditCardCompactComponent(props: RedditCardCompactComponentProps) {
   }
 
   return (
-    <Card sx={{ maxWidth: { xs: '100%' }, display: 'flex' }}>
+    <Card variant="outlined" sx={{ maxWidth: { xs: '100%' }, display: 'flex' }}>
       {props.data?.thumbnail && validURL(props.data?.thumbnail) && (
         <CardMedia
           component="img"

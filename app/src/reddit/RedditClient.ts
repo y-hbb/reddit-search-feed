@@ -1,28 +1,28 @@
 import { Axios } from 'axios';
-import { SearchOptions } from '../components/SearchComponent';
+import { type SearchOptions } from '../components/SearchComponent';
 import { v4 as uuidv4 } from 'uuid';
 
-type AuthData = {
+interface AuthData {
   access_token: string;
   token_type: string;
   expires_in: number;
   refresh_token: string;
   scope: string;
   device_id: string;
-};
+}
 
 class RedditClient {
-  private http: Axios;
-  private apiURL = 'https://oauth.reddit.com';
-  private authURL = 'https://www.reddit.com/api/v1/access_token';
+  private readonly http: Axios;
+  private readonly apiURL = 'https://oauth.reddit.com';
+  private readonly authURL = 'https://www.reddit.com/api/v1/access_token';
   private authData?: AuthData;
-  private hasRefreshToken = false;
-  private customAuthURL = import.meta.env.VITE_REDDIT_AUTH_SITE;
+  private readonly hasRefreshToken = false;
+  private readonly customAuthURL = import.meta.env.VITE_REDDIT_AUTH_SITE;
   constructor() {
     this.http = new Axios({});
-    this.getAccessToken();
   }
-  private async getAccessToken() {
+
+  private async getAccessToken(): Promise<void> {
     if (!localStorage.getItem('reddit-access-token')) {
       try {
         const formData = new FormData();
@@ -54,10 +54,9 @@ class RedditClient {
     }
   }
 
-  private async refreshToken() {}
-
-  async search(s: SearchOptions) {
-    let url =
+  async search(s: SearchOptions): Promise<any> {
+    await this.getAccessToken();
+    const url =
       this.apiURL +
       `/search.json?q=${s.q.replaceAll(' ', '+')}&include_over_18=${
         s.includeOver18 ? 1 : 0
@@ -76,7 +75,7 @@ class RedditClient {
     }
   }
 }
-function validateAccessToken(response: any) {
+function validateAccessToken(response: any): any {
   if (response.access_token) return true;
   return false;
 }
