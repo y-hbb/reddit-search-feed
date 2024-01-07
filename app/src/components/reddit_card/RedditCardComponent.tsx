@@ -1,15 +1,14 @@
-import React, { Suspense, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { VIEW } from '../FeedComponent';
 import RedditCardCompactComponent from './RedditCardCompactComponent';
-import RedditCardCompactEmptyComponent from './RedditCardCompactEmptyComponent';
 import RedditCardExpandedComponent from './RedditCardExpandedComponent';
 
-type RedditCardComponentProps = {
+interface RedditCardComponentProps {
   data: any;
   view: VIEW;
-};
-function RedditCardComponent(props: RedditCardComponentProps) {
-  const card = ({ data, view }: any) => {
+}
+function RedditCardComponent(props: RedditCardComponentProps): JSX.Element {
+  const DynamicCard = ({ data, view }: any): JSX.Element => {
     if (view === VIEW.COMPACT)
       return <RedditCardCompactComponent data={data} />;
     else if (
@@ -22,12 +21,12 @@ function RedditCardComponent(props: RedditCardComponentProps) {
   };
 
   return (
-    <Suspense fallback>
+    <>
       {useMemo(
-        () => card({ data: props.data, view: props.view }),
+        () => DynamicCard({ data: props.data, view: props.view }),
         [props.data, props.view]
       )}
-    </Suspense>
+    </>
   );
 }
 

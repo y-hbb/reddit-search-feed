@@ -16,8 +16,8 @@ import React from 'react';
 import { useAppDispatch, useAppSelector } from '../store/AppStore';
 import { actions } from '../store/RootReducer';
 
-function HeaderComponent() {
-  const mediaMaxQuality = useAppSelector((state) => state.mediaMaxQuality);
+function HeaderComponent(): JSX.Element {
+  const mediaMaxQuality = useAppSelector((state) => state.root.mediaMaxQuality);
   const dispatch = useAppDispatch();
   const [open, setOpen] = React.useState(false);
   return (

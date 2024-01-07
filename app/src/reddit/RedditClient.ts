@@ -49,7 +49,7 @@ class RedditClient {
     } else {
       this.authData = {
         ...this.authData,
-        ...JSON.parse(localStorage.getItem('reddit-access-token')!),
+        ...JSON.parse(localStorage.getItem('reddit-access-token') ?? ''),
       };
     }
   }

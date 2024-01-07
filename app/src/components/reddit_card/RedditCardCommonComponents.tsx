@@ -3,15 +3,14 @@ import { Box } from '@mui/system';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import React, { lazy } from 'react';
-import { A11y, Lazy, Navigation } from 'swiper';
+import { A11y, Navigation } from 'swiper/modules';
 import 'swiper/css';
-import 'swiper/css/lazy';
 import 'swiper/css/navigation';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { useAppDispatch, useAppSelector } from '../../store/AppStore';
 import { actions } from '../../store/RootReducer';
 
-export const PostTitle = function (props: any) {
+export const PostTitle = function (props: any): JSX.Element {
   const ReactMarkdown = lazy(() => import('react-markdown'));
   const dispatch = useAppDispatch();
 
@@ -49,14 +48,15 @@ export const PostTitle = function (props: any) {
               );
             },
           }}
-          children={props.data?.title}
-        />
+        >
+          {props.data?.title}
+        </ReactMarkdown>
       </Button>
     </>
   );
 };
 
-export const PostSubHeader = function (props: any) {
+export const PostSubHeader = function (props: any): JSX.Element {
   dayjs.extend(relativeTime);
   const dispatch = useAppDispatch();
   return (
@@ -177,17 +177,17 @@ export function postType(data: any): PostType | undefined {
   }
 }
 
-export const LoadContent = function (props: any) {
-  const mediaMaxQuality = useAppSelector((state) => state.mediaMaxQuality);
+export const LoadContent = function (props: any): JSX.Element {
+  const mediaMaxQuality = useAppSelector((state) => state.root.mediaMaxQuality);
   const data = postType(props.data);
 
   const type = data?.mediaType;
   const content = data?.content;
 
   if (type === MEDIA_TYPE.TEXT) {
-    const text = new String(props.data?.selftext).toString();
+    const text = String(props.data?.selftext).toString();
     if (text !== '') {
-      const ReactMarkdown = lazy(() => import('react-markdown'));
+      const ReactMarkdown = lazy(async () => await import('react-markdown'));
       return (
         <Box>
           <ReactMarkdown>{text}</ReactMarkdown>
@@ -326,11 +326,10 @@ export const LoadContent = function (props: any) {
     return (
       <>
         <Swiper
-          modules={[Navigation, A11y, Lazy]}
+          modules={[Navigation, A11y]}
           spaceBetween={50}
           slidesPerView={1}
           navigation
-          lazy
         >
           {slides}
         </Swiper>

@@ -1,7 +1,7 @@
 import { useAppSelector } from '../store/AppStore';
 
-export const useFilterPosts = function () {
-  const excludeItem = useAppSelector((state) => state.excludeItem);
+export const useFilterPosts = function (): any[] {
+  const excludeItem = useAppSelector((state) => state.root.excludeItem);
 
   let data = useAppSelector((state) => state.feedData.feedData);
 

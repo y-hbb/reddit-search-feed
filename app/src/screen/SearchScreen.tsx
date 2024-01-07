@@ -1,62 +1,70 @@
 import React, { useState } from 'react';
 import FeedComponent from '../components/FeedComponent';
-import LayoutComponent from '../components/LayoutComponent';
-import SearchComponent, { SearchOptions } from '../components/SearchComponent';
+import SearchComponent, {
+  emptySearchOptions,
+  type SearchOptions,
+} from '../components/SearchComponent';
 import { reddit } from '../reddit/RedditClient';
 import { useAppDispatch, useAppSelector } from '../store/AppStore';
 import { actions } from '../store/RootReducer';
 
-function SearchScreen() {
+function SearchScreen(): JSX.Element {
   const after = useAppSelector((state) => state.feedData.after);
   const dispatch = useAppDispatch();
-  const [searchOptions, setsearchOptions] = useState({} as SearchOptions);
+  const [searchOptions, setSearchOptions] = useState(emptySearchOptions);
 
   const [hasNextPage, setHasNextPage] = useState(false);
   const [isNextPageLoading, setIsNextPageLoading] = useState(false);
 
-  async function onSearch(sop: SearchOptions) {
-    setsearchOptions(sop);
+  function onSearch(sop: SearchOptions): void {
+    setSearchOptions(sop);
     setIsNextPageLoading(true);
-    const result = await reddit.search(sop);
-    setIsNextPageLoading(false);
+    reddit
+      .search(sop)
+      .then((result) => {
+        setIsNextPageLoading(false);
 
-    if (result.data.after) {
-      setHasNextPage(true);
-      dispatch(actions.setAfter(result.data.after));
-    } else {
-      setHasNextPage(false);
-      dispatch(actions.setAfter(result.data.after));
-    }
+        if (result.data.after) {
+          setHasNextPage(true);
+          dispatch(actions.setAfter(result.data.after));
+        } else {
+          setHasNextPage(false);
+          dispatch(actions.setAfter(result.data.after));
+        }
 
-    console.log(result);
-    dispatch(actions.addFeedData(result.data.children));
+        console.log(result);
+        dispatch(actions.addFeedData(result.data.children));
+      })
+      .catch(() => {});
   }
-  async function loadMore() {
+  function loadMore(): void {
     setIsNextPageLoading(true);
-    const result = await reddit.search({ ...searchOptions, after: after });
-    setIsNextPageLoading(false);
+    reddit
+      .search({ ...searchOptions, after })
+      .then((result) => {
+        setIsNextPageLoading(false);
 
-    if (result.data.after) {
-      setHasNextPage(true);
-      dispatch(actions.setAfter(result.data.after));
-    } else {
-      setHasNextPage(false);
-      dispatch(actions.setAfter(result.data.after));
-    }
+        if (result.data.after) {
+          setHasNextPage(true);
+          dispatch(actions.setAfter(result.data.after));
+        } else {
+          setHasNextPage(false);
+          dispatch(actions.setAfter(result.data.after));
+        }
 
-    console.log(result);
-    dispatch(actions.updateFeedData(result.data.children));
+        console.log(result);
+        dispatch(actions.addFeedData(result.data.children));
+      })
+      .catch(() => {});
   }
   return (
     <>
-      <LayoutComponent>
-        <SearchComponent search={onSearch} />
-        <FeedComponent
-          hasNextPage={hasNextPage}
-          isNextPageLoading={isNextPageLoading}
-          loadNextPage={loadMore}
-        />
-      </LayoutComponent>
+      <SearchComponent search={onSearch} />
+      <FeedComponent
+        hasNextPage={hasNextPage}
+        isNextPageLoading={isNextPageLoading}
+        loadNextPage={loadMore}
+      />
     </>
   );
 }

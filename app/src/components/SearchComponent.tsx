@@ -14,24 +14,32 @@ import {
   Switch,
   TextField,
 } from '@mui/material';
-import React, { KeyboardEvent, useState } from 'react';
+import React, { type KeyboardEvent, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/AppStore';
 import { actions } from '../store/RootReducer';
 
-type SearchComponentProps = {
+interface SearchComponentProps {
   search: (s: SearchOptions) => void;
-};
+}
 
-export type SearchOptions = {
+export interface SearchOptions {
   q: string;
   includeOver18: boolean;
   t: string;
   sort: string;
   after?: string;
+}
+
+export const emptySearchOptions: SearchOptions = {
+  q: '',
+  includeOver18: false,
+  t: 'all',
+  sort: 'relevance',
+  after: '',
 };
 
-function SearchComponent(props: SearchComponentProps) {
-  const excludeItem = useAppSelector((state) => state.excludeItem);
+function SearchComponent(props: SearchComponentProps): JSX.Element {
+  const excludeItem = useAppSelector((state) => state.root.excludeItem);
   const dispatch = useAppDispatch();
   const excludeList = excludeItem.map((v, i) => (
     <Grid key={i} item>
@@ -47,16 +55,16 @@ function SearchComponent(props: SearchComponentProps) {
       />
     </Grid>
   ));
-  //query
+  // query
   const [q, setQ] = useState('');
   const [selectedSort, setSelectedSort] = useState('relevance');
   const [selectedT, setSelectedT] = useState('all');
-  //safe search
+  // safe search
   const [safeS, setSafeS] = useState(true);
-  function searchKeyUp(e: KeyboardEvent<HTMLInputElement>) {
+  function searchKeyUp(e: KeyboardEvent<HTMLInputElement>): void {
     if (e.key === 'Enter') {
       props.search({
-        q: q,
+        q,
         includeOver18: !safeS,
         t: selectedT,
         sort: selectedSort,
@@ -92,14 +100,16 @@ function SearchComponent(props: SearchComponentProps) {
           fullWidth
           placeholder="Search..."
           value={q}
-          onChange={(e) => setQ(e.target.value)}
+          onChange={(e) => {
+            setQ(e.target.value);
+          }}
           onKeyUp={searchKeyUp}
         />
         <Button
           variant="outlined"
           onClick={() => {
             props.search({
-              q: q,
+              q,
               includeOver18: !safeS,
               t: selectedT,
               sort: selectedSort,
@@ -111,7 +121,12 @@ function SearchComponent(props: SearchComponentProps) {
         <FormGroup sx={{ minWidth: 'fit-content' }}>
           <FormControlLabel
             control={
-              <Switch checked={safeS} onChange={(_, c) => setSafeS(c)} />
+              <Switch
+                checked={safeS}
+                onChange={(_, c) => {
+                  setSafeS(c);
+                }}
+              />
             }
             label="Safe Search"
           />

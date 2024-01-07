@@ -16,10 +16,9 @@ import {
   useTheme,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import React, { Suspense, useState } from 'react';
-import { A11y, Lazy, Navigation, Virtual } from 'swiper';
+import React, { useState } from 'react';
+import { A11y, Navigation, Virtual } from 'swiper/modules';
 import 'swiper/css';
-import 'swiper/css/lazy';
 import 'swiper/css/navigation';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { useFilterPosts } from '../hooks/RedditHooks';
@@ -80,11 +79,13 @@ function FeedComponent(props: FeedComponentProps): JSX.Element {
   const slides = data.map((s, i) => {
     return (
       <SwiperSlide key={s.data.id}>
-        <RedditCardExpandedComponent
-          maxWidth={900}
-          maxHeight={'fit-content'}
-          data={s.data}
-        />
+        <>
+          <RedditCardExpandedComponent
+            maxWidth={900}
+            maxHeight={'fit-content'}
+            data={s.data}
+          />
+        </>
       </SwiperSlide>
     );
   });
@@ -141,9 +142,11 @@ function FeedComponent(props: FeedComponentProps): JSX.Element {
         </ToggleButtonGroup>
       )}
       {data.length > 0 && (
-        <Grid width="100%" container spacing={2}>
-          {list}
-        </Grid>
+        <>
+          <Grid width="100%" container spacing={2}>
+            {list}
+          </Grid>
+        </>
       )}
 
       {data.length === 0 && <Box>No posts</Box>}
@@ -194,18 +197,15 @@ function FeedComponent(props: FeedComponentProps): JSX.Element {
               </Button>
             </Grid>
           </Grid>
-          <Suspense fallback>
-            <Swiper
-              modules={[Navigation, A11y, Lazy, Virtual]}
-              spaceBetween={50}
-              slidesPerView={1}
-              lazy
-              initialSlide={swipeIndex}
-              virtual
-            >
-              {slides}
-            </Swiper>
-          </Suspense>
+          <Swiper
+            modules={[Navigation, A11y, Virtual]}
+            spaceBetween={50}
+            slidesPerView={1}
+            initialSlide={swipeIndex}
+            virtual
+          >
+            {slides}
+          </Swiper>
         </Box>
       </Modal>
     </Stack>
